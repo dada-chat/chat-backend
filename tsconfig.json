@@ -9,7 +9,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "types": [],
+    "types": ["node", "express"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -37,8 +37,14 @@
     "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
+    // "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*", // 일반적으로 소스 코드는 src 폴더에 위치합니다.
+    "src/server.ts"
+  ],
+  // exclude는 node_modules 폴더와 빌드 결과물을 제외하도록 지정합니다.
+  "exclude": ["node_modules", "dist"]
 }

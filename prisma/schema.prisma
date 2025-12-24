@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  users     User[]
+  domains   Domain[]
+  createdAt DateTime @default(now())
+}
+
+// 2. 사용자
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  passwordHash   String
+  role           Role           @default(MANAGER)
+  name           String?
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime       @default(now())
+  Conversation   Conversation[]
+}
+
+enum Role {
+  ADMIN
+  AGENT
+  MANAGER
+}
+
+// 3. 도메인
+model Domain {
+  id             String         @id @default(uuid())
+  domainUrl      String
+  siteKey        String         @unique @default(uuid())
+  isActive       Boolean        @default(true)
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  createdAt      DateTime       @default(now())
+  Conversation   Conversation[]
+}
+
+// 4. 채팅방 
+model Conversation {
+  id     String             @id @default(uuid())
+  status ConversationStatus @default(OPEN)
+
+  // 어느 도메인(사이트)에서 발생한 채팅인가
+  domainId String
+  domain   Domain @relation(fields: [domainId], references: [id])
+
+  // 어떤 상담원이 담당하고 있는가 (처음엔 없을 수 있음)
+  agentId String?
+  agent   User?   @relation(fields: [agentId], references: [id])
+
+  // 방문자 정보 (비회원이므로 세션ID나 임시 이름을 저장)
+  visitorId   String?
+  visitorName String? @default("Guest")
+
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum ConversationStatus {
+  OPEN
+  CLOSED
+}
+
+// 5. 채팅 메시지
+model Message {
+  id      String @id @default(uuid())
+  content String @db.Text // 긴 텍스트 대응
+
+  // 누가 보냈는가?
+  senderType String // "VISITOR" 또는 "AGENT"
+  senderId   String? // AGENT일 경우 User.id 저장
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
