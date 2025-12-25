@@ -24,5 +24,5 @@ app.use("/api/auth", authRoutes);
 
 // 서버 시작
 app.listen(PORT, () => {
-  console.log(`# Server listening on port: ${PORT} !!`);
+  console.log(`# Server listening on port: ${PORT} !!!!!!!!!!!!!!!!!!!!!!!`);
 });
