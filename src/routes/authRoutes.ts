@@ -8,7 +8,10 @@ router.post("/signup", signup);
 router.post("/signin", signin);
 
 router.get("/home", authenticateToken, (req, res) => {
-  res.json({ message: "인증 성공!", user: (req as any).user });
+  res.json({
+    message: "인증 성공!",
+    user: req.user,
+  });
 });
 
 export default router;
