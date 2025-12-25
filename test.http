@@ -1,0 +1,19 @@
+### 회원가입 테스트
+POST http://localhost:4000/api/auth/signup
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "password123!",
+  "name": "관리자",
+  "organizationName": "테스트 컴퍼너"
+}
+
+### 로그인 테스트
+POST http://localhost:4000/api/auth/signin
+Content-Type: application/json
+
+{
+  "email": "admin@test.com",
+  "password": "password123!"
+}
