@@ -17,3 +17,7 @@ Content-Type: application/json
   "email": "admin@test.com",
   "password": "password123!"
 }
+
+### 
+GET http://localhost:4000/api/auth/home
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNzkxOTI5ZS1hNTdjLTQ1NDgtYThlYy1hNmY4ZWEyNjNmM2MiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYyZmQ1N2MzLTkwZDctNDA3My1hMzY1LTlkZmZlMzFkNDA3YyIsImlhdCI6MTc2NjY1MDIzOSwiZXhwIjoxNzY2NzM2NjM5fQ._Gga5breLQ59o1x8gISbzD_WoguTEIOobzji-pGCWtc
