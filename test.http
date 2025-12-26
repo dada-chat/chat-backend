@@ -6,7 +6,7 @@ Content-Type: application/json
   "email": "admin_dada@dada.com",
   "password": "password123!",
   "name": "다다",
-  "organizationName": "다다쓰 포트폴리오"
+  "organizationName": "포트폴리오"
 }
 
 ### 로그인 테스트
@@ -33,7 +33,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNzkxO
 
 ### 새로운 팀원 생성
 POST http://localhost:4000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxNzkxOTI5ZS1hNTdjLTQ1NDgtYThlYy1hNmY4ZWEyNjNmM2MiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYyZmQ1N2MzLTkwZDctNDA3My1hMzY1LTlkZmZlMzFkNDA3YyIsImlhdCI6MTc2NjY3OTQyNywiZXhwIjoxNzY2NjgzMDI3fQ.uxayssH9nleGe6mVZuAzrdpuBVTOhewtIX9lr_iN_JQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwOTM5N2FmNy1iZDZjLTQ3NGEtYWZlMS1mOGE5NmUwNzY1N2MiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTUyMywiZXhwIjoxNzY2NzQ1MTIzfQ.6mcfeWQwWgCWkYoiApM0DjUeRcUiB2fDC8oHkMXyImY
 Content-Type: application/json
 
 {
@@ -45,7 +45,7 @@ Content-Type: application/json
 
 ### 회사 관리자 생성
 POST http://localhost:4000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwOTljODEwZi1mNTNkLTQ1ZTAtYWRmMi1kYzFiZDYwM2YxYjciLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjIyODI4NzcyLTc3ZGUtNGFlOC1iOWFhLTQ0YTY4MmI4NDk5ZSIsImlhdCI6MTc2NjcyMjA4MywiZXhwIjoxNzY2NzI1NjgzfQ.l90suVc4tltpgry_bOLCv7zOskewIZ_V2kNVEMJCC5s
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTAzMywiZXhwIjoxNzY2NzQ0NjMzfQ.AVoXdEZmcqlFU2ct0_UcGSuVHT6ObE7DTfsbC-QjFl4
 Content-Type: application/json
 
 {
@@ -53,10 +53,35 @@ Content-Type: application/json
   "password": "password123",
   "name": "포트폴리오 관리자",
   "role": "AGENT",
-  "organizationId":"22828772-77de-4ae8-b9aa-44a682b8499e"
+  "organizationId":"6158114a-17fe-46fc-8456-ffc57ead45eb"
 }
 
 
 ### 유저 status 상태 변경(ACTIVE)
-PATCH http://localhost:4000/api/users/approve/4d457389-3835-4303-be11-230678611d46
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwOTljODEwZi1mNTNkLTQ1ZTAtYWRmMi1kYzFiZDYwM2YxYjciLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjIyODI4NzcyLTc3ZGUtNGFlOC1iOWFhLTQ0YTY4MmI4NDk5ZSIsImlhdCI6MTc2NjcyMjk0OCwiZXhwIjoxNzY2NzI2NTQ4fQ.Gm3Go2i12SV-E6mGtK8-4sxhaoB6OmLgQWIwlCsENMk
+PATCH http://localhost:4000/api/users/approve/09397af7-bd6c-474a-afe1-f8a96e07657c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTAzMywiZXhwIjoxNzY2NzQ0NjMzfQ.AVoXdEZmcqlFU2ct0_UcGSuVHT6ObE7DTfsbC-QjFl4
+### 유저 초대
+POST http://localhost:4000/api/invitations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTAzMywiZXhwIjoxNzY2NzQ0NjMzfQ.AVoXdEZmcqlFU2ct0_UcGSuVHT6ObE7DTfsbC-QjFl4
+Content-Type: application/json
+
+{
+  "email": "invite_manager@dada.com",
+  "name": "장초대",
+  "role": "MANAGER"
+}
+
+### 초대 목록
+GET http://localhost:4000/api/invitations?status=accepted
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZDQ1NzM4OS0zODM1LTQzMDMtYmUxMS0yMzA2Nzg2MTFkNDYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjIyODI4NzcyLTc3ZGUtNGFlOC1iOWFhLTQ0YTY4MmI4NDk5ZSIsImlhdCI6MTc2NjczODMzOSwiZXhwIjoxNzY2NzQxOTM5fQ.6du5gEvIzMFCbY10K4-soZGfGskzn77v53GDdjwvyUM
+
+### 초대받은 유저, 링크를 타고 가입하는 상황
+POST http://localhost:4000/api/auth/signup/invitation
+Content-Type: application/json
+
+{
+  "email": "invite_manager@dada.com",
+  "password": "password123",
+  "name": "장초대",
+  "organizationId": "2e132fcd-bfb5-4eb2-b12c-c80568fc042e"
+}

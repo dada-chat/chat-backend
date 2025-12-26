@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { signupAdmin, signin } from "../controllers/authController.js";
+import {
+  signupAdmin,
+  signupInvitation,
+  signin,
+} from "../controllers/authController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
@@ -30,6 +34,7 @@ const router = Router();
  *         description: 성공
  */
 router.post("/signup/admin", signupAdmin);
+router.post("/signup/invitation", signupInvitation);
 
 /**
  * @swagger
