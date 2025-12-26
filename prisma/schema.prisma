@@ -27,6 +27,7 @@ model User {
   email          String         @unique
   passwordHash   String
   role           Role           @default(MANAGER)
+  status         UserStatus     @default(PENDING)
   name           String?
   organizationId String
   organization   Organization   @relation(fields: [organizationId], references: [id])
@@ -35,9 +36,15 @@ model User {
 }
 
 enum Role {
-  ADMIN
-  AGENT
+  ADMIN // 최고관리자
+  AGENT // 회사관리자
   MANAGER
+}
+
+enum UserStatus {
+  PENDING // 승인 대기 
+  ACTIVE // 활성화
+  INACTIVED // 비활성화 (로그인 불가)
 }
 
 // 3. 도메인
@@ -62,8 +69,8 @@ model Conversation {
   domain   Domain @relation(fields: [domainId], references: [id])
 
   // 어떤 상담원이 담당하고 있는가 (처음엔 없을 수 있음)
-  agentId String?
-  agent   User?   @relation(fields: [agentId], references: [id])
+  assignedUserId String?
+  assignedUser   User?   @relation(fields: [assignedUserId], references: [id])
 
   // 방문자 정보 (비회원이므로 세션ID나 임시 이름을 저장)
   visitorId   String?
