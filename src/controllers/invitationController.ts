@@ -40,3 +40,32 @@ export const getInvitations = async (req: Request, res: Response) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+export const getInvitationDetail = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "비정상적인 접근입니다." });
+    }
+
+    const invitation = await invitationService.getInvitationById(id);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        email: invitation.email,
+        name: invitation.name,
+        organizationId: invitation.organizationId,
+        organizationName: invitation.organization.name,
+        role: invitation.role,
+      },
+    });
+  } catch (error: any) {
+    // 서비스에서 throw한 구체적인 메시지를 응답
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

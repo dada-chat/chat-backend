@@ -38,8 +38,8 @@ export class InvitationRepository {
     });
   }
 
-  // 가입 완료 후 상태 변경
-  async updateStatus(id: string) {
+  // 초대로 가입 완료 시, "초대 수락" 상태 변경
+  async updateAsAccepted(id: string) {
     return prisma.invitation.update({
       where: { id },
       data: { isAccepted: true },
@@ -62,6 +62,18 @@ export class InvitationRepository {
         },
       },
       orderBy: { createdAt: "desc" }, // 최신순 정렬
+    });
+  }
+
+  // 초대 받은 정보 상세 조회
+  async findByIdWithOrg(id: string) {
+    return prisma.invitation.findUnique({
+      where: { id },
+      include: {
+        organization: {
+          select: { name: true },
+        },
+      },
     });
   }
 }

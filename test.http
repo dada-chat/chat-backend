@@ -62,12 +62,12 @@ PATCH http://localhost:4000/api/users/approve/09397af7-bd6c-474a-afe1-f8a96e0765
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTAzMywiZXhwIjoxNzY2NzQ0NjMzfQ.AVoXdEZmcqlFU2ct0_UcGSuVHT6ObE7DTfsbC-QjFl4
 ### 유저 초대
 POST http://localhost:4000/api/invitations
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc0MTAzMywiZXhwIjoxNzY2NzQ0NjMzfQ.AVoXdEZmcqlFU2ct0_UcGSuVHT6ObE7DTfsbC-QjFl4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc2NTk4OCwiZXhwIjoxNzY2NzY5NTg4fQ.zwO7wxV7eLv435QaxC1pW5P1XwxJbrwWxyho0BJAvXg
 Content-Type: application/json
 
 {
-  "email": "invite_manager@dada.com",
-  "name": "장초대",
+  "email": "lds8835@naver.com",
+  "name": "네이버 계정",
   "role": "MANAGER"
 }
 

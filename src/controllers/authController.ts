@@ -36,13 +36,23 @@ export const signin = async (req: Request, res: Response) => {
 
 export const signupInvitation = async (req: Request, res: Response) => {
   try {
-    const newUser = await userService.registerInvitation(req.body);
+    const { invitationId, password, name } = req.body;
+
+    const user = await userService.registerInvitation({
+      invitationId,
+      password,
+      name,
+    });
 
     res.status(201).json({
-      message: "초대를 통한 가입이 완료되었습니다. 바로 로그인하세요!",
-      data: newUser,
+      success: true,
+      message: "회원가입이 완료되었습니다.",
+      data: { userId: user.id, email: user.email },
     });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
