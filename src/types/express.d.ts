@@ -1,7 +1,9 @@
+import { Role } from "@prisma/client";
+
 // 유저 정보의 구조 정의
 export interface AuthUser {
   userId: string;
-  role: "ADMIN" | "AGENT" | "MANAGER";
+  role: Role;
   organizationId: string;
 }
 

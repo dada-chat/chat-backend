@@ -1,12 +1,16 @@
 import { Router } from "express";
-import { signup, signin } from "../controllers/authController.js";
+import {
+  signupAdmin,
+  signupInvitation,
+  signin,
+} from "../controllers/authController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
 /**
  * @swagger
- * /api/auth/signup:
+ * /api/auth/adminSignup:
  *   post:
  *     summary: 관리자 회원가입
  *     tags: [Auth]
@@ -29,7 +33,8 @@ const router = Router();
  *       201:
  *         description: 성공
  */
-router.post("/signup", signup);
+router.post("/signup/admin", signupAdmin);
+router.post("/signup/invitation", signupInvitation);
 
 /**
  * @swagger

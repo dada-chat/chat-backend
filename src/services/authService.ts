@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const userRepository = new UserRepository();
 
 export class AuthService {
-  async signup(data: {
+  async signupAdmin(data: {
     email: string;
     password: string;
     name: string;
@@ -32,6 +32,18 @@ export class AuthService {
     const user = await userRepository.findByEmail(data.email);
     if (!user) {
       throw new Error("이메일 또는 비밀번호가 일치하지 않습니다.");
+    }
+
+    // 유저 상태에 따른 에러메세지
+    if (user.status === "PENDING") {
+      throw new Error(
+        "아직 승인되지 않은 계정입니다. 관리자 승인 후 이용해주세요."
+      );
+    }
+
+    if (user.status === "INACTIVED") {
+      // 혹은 SUSPENDED
+      throw new Error("비활성화된 계정입니다. 관리자에게 문의하세요.");
     }
 
     // 2. 비밀번호 비교 (입력 비번 vs DB 암호화 비번)

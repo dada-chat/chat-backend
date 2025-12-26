@@ -14,30 +14,56 @@ datasource db {
 }
 
 model Organization {
-  id        String   @id @default(uuid())
-  name      String
-  users     User[]
-  domains   Domain[]
-  createdAt DateTime @default(now())
+  id         String       @id @default(uuid())
+  name       String
+  users      User[]
+  domains    Domain[]
+  createdAt  DateTime     @default(now())
+  Invitation Invitation[]
 }
 
 // 2. 사용자
 model User {
-  id             String         @id @default(uuid())
-  email          String         @unique
-  passwordHash   String
-  role           Role           @default(MANAGER)
-  name           String?
-  organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id])
-  createdAt      DateTime       @default(now())
-  Conversation   Conversation[]
+  id              String         @id @default(uuid())
+  email           String         @unique
+  passwordHash    String
+  role            Role           @default(MANAGER)
+  status          UserStatus     @default(PENDING)
+  name            String?
+  organizationId  String
+  organization    Organization   @relation(fields: [organizationId], references: [id])
+  createdAt       DateTime       @default(now())
+  Conversation    Conversation[]
+  sentInvitations Invitation[]   @relation("InvitedBy")
 }
 
 enum Role {
-  ADMIN
-  AGENT
+  ADMIN // 최고관리자
+  AGENT // 회사관리자
   MANAGER
+}
+
+enum UserStatus {
+  PENDING // 승인 대기 
+  ACTIVE // 활성화
+  INACTIVED // 비활성화 (로그인 불가)
+}
+
+// 5. 사용자 초대 
+model Invitation {
+  id         String  @id @default(uuid())
+  email      String  @unique
+  name       String?
+  role       Role    @default(MANAGER) // 초대 시 부여할 역할
+  isAccepted Boolean @default(false)
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  invitedById String
+  invitedBy   User   @relation("InvitedBy", fields: [invitedById], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 // 3. 도메인
@@ -62,8 +88,8 @@ model Conversation {
   domain   Domain @relation(fields: [domainId], references: [id])
 
   // 어떤 상담원이 담당하고 있는가 (처음엔 없을 수 있음)
-  agentId String?
-  agent   User?   @relation(fields: [agentId], references: [id])
+  assignedUserId String?
+  assignedUser   User?   @relation(fields: [assignedUserId], references: [id])
 
   // 방문자 정보 (비회원이므로 세션ID나 임시 이름을 저장)
   visitorId   String?
@@ -85,8 +111,8 @@ model Message {
   content String @db.Text // 긴 텍스트 대응
 
   // 누가 보냈는가?
-  senderType String // "VISITOR" 또는 "AGENT"
-  senderId   String? // AGENT일 경우 User.id 저장
+  senderType String // "VISITOR" 또는 "USER"
+  senderId   String? // USER일 경우 User.id 저장
 
   conversationId String
   conversation   Conversation @relation(fields: [conversationId], references: [id])
