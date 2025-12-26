@@ -3,9 +3,9 @@ import { AuthService } from "../services/authService.js";
 
 const authService = new AuthService();
 
-export const signup = async (req: Request, res: Response) => {
+export const signupAdmin = async (req: Request, res: Response) => {
   try {
-    const result = await authService.signup(req.body);
+    const result = await authService.signupAdmin(req.body);
 
     res.status(201).json({
       message: "회원가입 성공",

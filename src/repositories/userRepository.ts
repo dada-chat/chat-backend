@@ -1,11 +1,17 @@
 import prisma from "../config/prisma.js";
-import { Role } from "@prisma/client";
+import { Role, UserStatus } from "@prisma/client";
+import type { CreateUserDto } from "../types/user.js";
 
 export class UserRepository {
   async findByEmail(email: string) {
     return prisma.user.findUnique({ where: { email } });
   }
 
+  async findById(userId: string) {
+    return prisma.user.findUnique({ where: { id: userId } });
+  }
+
+  // 최고관리자 생성
   async createAdminWithOrganization(data: {
     email: string;
     passwordHash: string;
@@ -24,11 +30,55 @@ export class UserRepository {
           passwordHash: data.passwordHash,
           name: data.name,
           role: Role.ADMIN,
+          status: UserStatus.ACTIVE,
           organizationId: organization.id,
         },
       });
 
       return { user, organization };
+    });
+  }
+
+  // 관리자 이외의 유저 생성
+  async createUser(data: CreateUserDto) {
+    return prisma.user.create({
+      data: {
+        email: data.email,
+        passwordHash: data.password,
+        name: data.name || null,
+        role: data.role as Role,
+        status: data.status as UserStatus,
+        organizationId: data.organizationId,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+        organizationId: true,
+        organization: {
+          // 관계된 데이터 가져오기
+          select: {
+            name: true,
+          },
+        },
+        createdAt: true,
+      },
+    });
+  }
+
+  async findByOrganization(organizationId: string) {
+    return prisma.user.findMany({
+      where: { organizationId },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  async updateStatus(userId: string, status: UserStatus) {
+    return prisma.user.update({
+      where: { id: userId },
+      data: { status },
     });
   }
 }
