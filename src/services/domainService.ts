@@ -30,8 +30,14 @@ export class DomainService {
     });
   }
 
-  async getDomains(organizationId: string) {
-    return await this.domainRepository.findByOrganizationId(organizationId);
+  async getDomains(currentUser: { role: string; organizationId: string }) {
+    if (currentUser.role === "ADMIN") {
+      return await this.domainRepository.findAllDomains();
+    }
+
+    return await this.domainRepository.findByOrganizationId(
+      currentUser.organizationId
+    );
   }
 
   async removeDomain(
@@ -58,5 +64,26 @@ export class DomainService {
     }
 
     throw new Error("삭제할 권한이 없습니다.");
+  }
+
+  async toggleDomainActive(
+    domainId: string,
+    currentUser: { role: string; organizationId: string }
+  ) {
+    const domain = await this.domainRepository.findByDomainId(domainId);
+
+    if (!domain) throw new Error("도메인을 찾을 수 없습니다.");
+
+    if (
+      currentUser.role !== "ADMIN" &&
+      domain.organizationId !== currentUser.organizationId
+    ) {
+      throw new Error("상태를 변경할 권한이 없습니다.");
+    }
+
+    return await this.domainRepository.updateActiveStatus(
+      domainId,
+      !domain.isActive
+    );
   }
 }

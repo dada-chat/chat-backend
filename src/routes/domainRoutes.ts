@@ -3,6 +3,7 @@ import {
   addDomain,
   getyDomains,
   deleteDomain,
+  updateDomainStatus,
 } from "../controllers/domainController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
@@ -18,5 +19,8 @@ router.get("/", getyDomains);
 
 // 도메인 삭제 (/:id 형태)
 router.delete("/:id", deleteDomain);
+
+// 도메인 상태 변경
+router.patch("/:id", updateDomainStatus);
 
 export default router;

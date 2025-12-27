@@ -25,8 +25,8 @@ export const addDomain = async (req: Request, res: Response) => {
 
 export const getyDomains = async (req: Request, res: Response) => {
   try {
-    const { organizationId } = req.user!;
-    const domains = await domainService.getDomains(organizationId);
+    const currentUser = req.user!;
+    const domains = await domainService.getDomains(currentUser);
 
     res.status(200).json({
       success: true,
@@ -61,5 +61,30 @@ export const deleteDomain = async (req: Request, res: Response) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const updateDomainStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const currentUser = req.user!;
+
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "변경해야하는 도메인 ID 정보를 확인해 주세요.",
+      });
+    }
+    const updated = await domainService.toggleDomainActive(id, currentUser);
+
+    res.status(200).json({
+      success: true,
+      message: `도메인이 ${
+        updated.isActive ? "활성화" : "비활성화"
+      } 되었습니다.`,
+      data: updated,
+    });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
 };

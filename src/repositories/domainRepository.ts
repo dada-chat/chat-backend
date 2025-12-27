@@ -21,6 +21,18 @@ export class DomainRepository {
     });
   }
 
+  // 모든 도메인 조회 (ADMIN용)
+  async findAllDomains() {
+    return prisma.domain.findMany({
+      include: {
+        organization: {
+          select: { name: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   // 특정 도메인 조회
   async findByDomainId(id: string) {
     return prisma.domain.findUnique({
@@ -50,6 +62,14 @@ export class DomainRepository {
   async deleteDomain(domainId: string) {
     return prisma.domain.delete({
       where: { id: domainId },
+    });
+  }
+
+  // 도메인 상태 변경
+  async updateActiveStatus(id: string, isActive: boolean) {
+    return prisma.domain.update({
+      where: { id },
+      data: { isActive },
     });
   }
 
