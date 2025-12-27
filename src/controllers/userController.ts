@@ -32,7 +32,7 @@ export const approveUser = async (req: Request, res: Response) => {
     if (!userId) {
       return res.status(400).json({ message: "승인할 유저 ID가 필요합니다." });
     }
-    const result = await userService.approveManager(userId, req.user!);
+    const result = await userService.approveStatusChange(userId, req.user!);
     res.status(200).json({ message: "승인 완료", data: result });
   } catch (error: any) {
     res.status(400).json({ message: error.message });

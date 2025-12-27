@@ -42,7 +42,7 @@ export class UserService {
     });
   }
 
-  async approveManager(
+  async approveStatusChange(
     targetUserId: string,
     agentUser: { organizationId: string; role: Role }
   ) {
@@ -79,5 +79,16 @@ export class UserService {
         throw new Error("유효하지 않거나 이미 사용된 초대장입니다.");
       }
     });
+  }
+
+  // 유저 목록 조회
+  async getUsers(user: { role: string; organizationId: string }) {
+    // ADMIN인 경우, 모든 유저
+    if (user.role === "ADMIN") {
+      return await this.userRepository.findAllUsers();
+    }
+
+    // 그 외, 해당 조직 유저들만 반환
+    return await this.userRepository.findByOrganization(user.organizationId);
   }
 }
