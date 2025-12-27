@@ -138,3 +138,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2M
 ### 도메인 상태 변경
 PATCH http://localhost:4000/api/domains/a01922af-061e-4fff-accd-e6f9e845db50
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2Njg0NDE4MSwiZXhwIjoxNzY2ODQ3NzgxfQ.Xg-HHvxVTIwHJXyKADJ2H7UDhfOHTSo4Beq7gdqt538
+
+### 위젯 채팅 시작
+POST http://localhost:4000/api/widget/init
+x-site-key: e5a76b7c-58f4-4f82-af5a-4047e2fcca4e
+Content-Type: application/json
+
+{
+  "email": "gd.hong@test.com",
+  "name": "홍길동"
+}
