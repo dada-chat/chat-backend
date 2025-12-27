@@ -78,6 +78,16 @@ model Domain {
   Conversation   Conversation[]
 }
 
+// 6. 채팅 방문자 식별
+model Visitor {
+  id    String  @id @default(uuid())
+  email String  @unique
+  name  String? @default("Guest")
+
+  Conversation Conversation[]
+  createdAt    DateTime       @default(now())
+}
+
 // 4. 채팅방 
 model Conversation {
   id     String             @id @default(uuid())
@@ -91,9 +101,9 @@ model Conversation {
   assignedUserId String?
   assignedUser   User?   @relation(fields: [assignedUserId], references: [id])
 
-  // 방문자 정보 (비회원이므로 세션ID나 임시 이름을 저장)
-  visitorId   String?
-  visitorName String? @default("Guest")
+  // 방문자 정보
+  visitorId String
+  visitor   Visitor @relation(fields: [visitorId], references: [id])
 
   messages  Message[]
   createdAt DateTime  @default(now())
