@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
 import organizationRoutes from "./routes/organizationRoutes.js";
+import domainRoutes from "./routes/domainRoutes.js";
 // swagger 관련
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./config/swagger.js";
@@ -31,6 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/invitations", invitationRoutes);
 app.use("/api/organizations", organizationRoutes);
+app.use("/api/domains", domainRoutes);
 
 // 서버 시작
 app.listen(PORT, () => {

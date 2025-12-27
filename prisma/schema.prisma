@@ -69,11 +69,11 @@ model Invitation {
 // 3. 도메인
 model Domain {
   id             String         @id @default(uuid())
-  domainUrl      String
+  domainUrl      String         @unique
   siteKey        String         @unique @default(uuid())
   isActive       Boolean        @default(true)
   organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id])
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdAt      DateTime       @default(now())
   Conversation   Conversation[]
 }
