@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
+import organizationRoutes from "./routes/organizationRoutes.js";
 // swagger 관련
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./config/swagger.js";
@@ -23,12 +24,13 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // 기본 헬스체크 라우트
 app.get("/", (req: Request, res: Response) => {
-  res.send("Chat Service Backend is Running~~~");
+  res.send("DadaChat Service Backend is Running~~~");
 });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/invitations", invitationRoutes);
+app.use("/api/organizations", organizationRoutes);
 
 // 서버 시작
 app.listen(PORT, () => {

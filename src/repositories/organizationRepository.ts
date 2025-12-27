@@ -3,12 +3,14 @@ import { Role } from "@prisma/client";
 import type { CreateUserDto } from "../types/user.js";
 
 export class OrganizationRepository {
-  async create(name: string) {
+  // 조직 생성
+  async createOrganization(name: string) {
     return prisma.organization.create({
       data: { name },
     });
   }
 
+  // 조직 생성 및 유저 생성 : 회사조직부터 사용자 정보까지 전부 입력하는 케이스 (보류)
   async createWithUser(orgName: string, userData: CreateUserDto) {
     return prisma.$transaction(async (tx) => {
       // 1. 조직 먼저 생성
@@ -31,7 +33,8 @@ export class OrganizationRepository {
     });
   }
 
-  async findAll() {
+  // 조직 목록 조회
+  async findAllOrganizations() {
     return prisma.organization.findMany({
       orderBy: { createdAt: "desc" },
     });

@@ -68,6 +68,7 @@ export class UserRepository {
     });
   }
 
+  // 특정 조직의 유저 조회
   async findByOrganization(organizationId: string) {
     return prisma.user.findMany({
       where: { organizationId },
@@ -75,6 +76,19 @@ export class UserRepository {
     });
   }
 
+  // 전체 유저 조회 (SUPER_ADMIN용)
+  async findAllUsers() {
+    return prisma.user.findMany({
+      include: {
+        organization: {
+          select: { name: true }, // 어느 회사 소속인지 표시
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  // 사용자 (계정)상태 변경
   async updateStatus(userId: string, status: UserStatus) {
     return prisma.user.update({
       where: { id: userId },
