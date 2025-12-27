@@ -56,7 +56,10 @@ export class DomainRepository {
   // siteKey로 도메인 정보 확인
   async findBySiteKey(siteKey: string) {
     return prisma.domain.findUnique({
-      where: { siteKey },
+      where: {
+        siteKey,
+        isActive: true,
+      },
       include: { organization: true },
     });
   }
