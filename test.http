@@ -75,7 +75,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0O
 Content-Type: application/json
 
 {
-  "email": "lds8835@naver.com",
+  "email": "naver@naver.com",
   "name": "네이버 계정",
   "role": "MANAGER"
 }
@@ -138,3 +138,34 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2M
 ### 도메인 상태 변경
 PATCH http://localhost:4000/api/domains/a01922af-061e-4fff-accd-e6f9e845db50
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2Njg0NDE4MSwiZXhwIjoxNzY2ODQ3NzgxfQ.Xg-HHvxVTIwHJXyKADJ2H7UDhfOHTSo4Beq7gdqt538
+
+### 위젯 채팅 시작
+POST http://localhost:4000/api/widget/init
+x-site-key: e5a76b7c-58f4-4f82-af5a-4047e2fcca4e
+Content-Type: application/json
+
+{
+  "email": "gd.hong@test.com",
+  "name": "홍길동"
+}
+
+### 위젯, 메시지 보내기
+POST http://localhost:4000/api/widget/message
+x-site-key: e5a76b7c-58f4-4f82-af5a-4047e2fcca4e
+Content-Type: application/json
+
+{
+  "conversationId": "9610f851-5e82-4659-a3a6-3cd248727507",
+  "visitorId": "defa71df-18f6-43ef-ab23-a045cd01e493",
+  "content": "안녕하세요! 문의사항이 있습니다."
+}
+
+### 사용자, 메세지 보내기
+POST http://localhost:4000/api/chat/messages
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2MmYyZC05NTM1LTQ3ODctYTI4Yy02ZjE2NzIwOWMzMTYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYyYjllZmZjLTA0ZTQtNDI0Yy1hMDcwLTE3N2U3MTVlNjY4NCIsImlhdCI6MTc2Njg4MzQxMCwiZXhwIjoxNzY2ODg3MDEwfQ.cBgw0ZBs2yPNfeWHk09IPaU0j5WEpFLQ4CKvrub5_7Y
+Content-Type: application/json
+
+{
+  "conversationId": "9610f851-5e82-4659-a3a6-3cd248727507",
+  "content": "문의사항을 자세히 말씀해주세요 :)"
+}

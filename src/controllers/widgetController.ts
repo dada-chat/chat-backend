@@ -1,0 +1,58 @@
+import type { Request, Response } from "express";
+import { WidgetService } from "../services/widgetService.js";
+import { MessageService } from "../services/messageService.js";
+import { SenderType } from "@prisma/client";
+
+const widgetService = new WidgetService();
+const messageService = new MessageService();
+
+export const initChat = async (req: Request, res: Response) => {
+  try {
+    const { email, name } = req.body;
+    const { domainId } = req.widget!;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "이메일은 필수입니다." });
+    }
+
+    const result = await widgetService.initializeChat(email, name, domainId);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const sendWidgetMessage = async (req: Request, res: Response) => {
+  try {
+    const { content, conversationId, visitorId } = req.body;
+
+    if (!content || !conversationId || !visitorId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "현재 메세지를 전송할 수 없는 상태입니다. 잠시 후 다시 시도해 주세요.",
+      });
+    }
+
+    // 💡 위젯에서 보내면, senderType은 항상 "VISITOR"
+    const message = await messageService.sendMessage({
+      content,
+      conversationId,
+      senderType: SenderType.VISITOR,
+      senderId: visitorId,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: message,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
