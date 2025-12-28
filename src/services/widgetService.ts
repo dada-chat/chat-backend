@@ -21,15 +21,10 @@ export class WidgetService {
 
     // 3. 없다면 새로 생성
     if (!conversation) {
-      const newConversation =
-        await this.conversationRepository.createConversation(
-          visitor.id,
-          domainId
-        );
-      conversation = {
-        ...newConversation,
-        messages: [],
-      };
+      conversation = await this.conversationRepository.createConversation(
+        visitor.id,
+        domainId
+      );
     }
 
     return {

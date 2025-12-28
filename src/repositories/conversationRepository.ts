@@ -9,6 +9,9 @@ export class ConversationRepository {
         domainId,
         status: "OPEN",
       },
+      include: {
+        messages: true,
+      },
     });
   }
 
@@ -29,6 +32,20 @@ export class ConversationRepository {
           take: 30,
         },
       },
+    });
+  }
+
+  async assignUser(conversationId: string, userId: string) {
+    return prisma.conversation.update({
+      where: { id: conversationId },
+      data: { assignedUserId: userId },
+    });
+  }
+
+  async findByIdWithDomain(conversationId: string) {
+    return prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: { domain: true },
     });
   }
 }

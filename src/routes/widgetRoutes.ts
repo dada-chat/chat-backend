@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { authenticateWidget } from "../middlewares/widgetAuthMiddleware.js";
-import { initChat } from "../controllers/widgetController.js";
+import {
+  initChat,
+  sendWidgetMessage,
+} from "../controllers/widgetController.js";
 
 const router = Router();
 
@@ -16,5 +19,7 @@ router.get("/config", authenticateWidget, (req, res) => {
 });
 
 router.post("/init", authenticateWidget, initChat);
+
+router.post("/message", authenticateWidget, sendWidgetMessage);
 
 export default router;
