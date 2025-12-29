@@ -14,12 +14,13 @@ datasource db {
 }
 
 model Organization {
-  id         String       @id @default(uuid())
-  name       String
-  users      User[]
-  domains    Domain[]
-  createdAt  DateTime     @default(now())
-  Invitation Invitation[]
+  id           String         @id @default(uuid())
+  name         String
+  users        User[]
+  domains      Domain[]
+  createdAt    DateTime       @default(now())
+  Invitation   Invitation[]
+  RefreshToken RefreshToken[]
 }
 
 // 2. 사용자
@@ -35,6 +36,20 @@ model User {
   createdAt       DateTime       @default(now())
   Conversation    Conversation[]
   sentInvitations Invitation[]   @relation("InvitedBy")
+  RefreshToken    RefreshToken[]
+}
+
+// 7. 사용자
+model RefreshToken {
+  id             String         @id @default(uuid())
+  token          String         @unique
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+  expiresAt      DateTime
+  Organization   Organization?  @relation(fields: [organizationId], references: [id])
+  organizationId String?
+  Conversation   Conversation[]
 }
 
 enum Role {
@@ -105,9 +120,11 @@ model Conversation {
   visitorId String
   visitor   Visitor @relation(fields: [visitorId], references: [id])
 
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  messages       Message[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  RefreshToken   RefreshToken? @relation(fields: [refreshTokenId], references: [id])
+  refreshTokenId String?
 }
 
 enum ConversationStatus {
