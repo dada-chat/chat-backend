@@ -1,0 +1,11 @@
+import type { CookieOptions } from "express";
+
+const isProd = process.env.NODE_ENV === "production";
+
+export const refreshTokenCookieOptions: CookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/api/auth/refresh",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
+};
