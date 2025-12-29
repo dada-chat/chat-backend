@@ -48,6 +48,10 @@ export class ConversationService {
     // 1. 권한 체크
     const conversation = await this.validateAccess(conversationId, currentUser);
 
+    if (conversation?.status === ConversationStatus.CLOSED) {
+      throw new Error("이미 종료된 대화방에는 메시지를 보낼 수 없습니다.");
+    }
+
     // 2. 담당자 자동 배정
     if (conversation.assignedUserId !== currentUser.userId) {
       await this.assignUser(conversationId, currentUser.userId);

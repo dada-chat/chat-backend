@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { WidgetService } from "../services/widgetService.js";
 import { MessageService } from "../services/messageService.js";
 import { SenderType } from "@prisma/client";
+import { SOCKET_EVENTS } from "../shared/socketEvents.js";
 
 const widgetService = new WidgetService();
 const messageService = new MessageService();
@@ -46,6 +47,17 @@ export const sendWidgetMessage = async (req: Request, res: Response) => {
       conversationId,
       senderType: SenderType.VISITOR,
       senderId: visitorId,
+    });
+
+    // 실시간 전송
+    const io = req.app.get("io");
+    // 대화방에 메시지 전송
+    io.to(conversationId).emit(SOCKET_EVENTS.MESSAGE_RECEIVED, message);
+    const orgId = message.conversation.domain.organizationId;
+    io.to(`org_${orgId}`).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_LIST, {
+      conversationId,
+      lastMessage: content,
+      updatedAt: message.createdAt,
     });
 
     res.status(201).json({

@@ -162,12 +162,12 @@ Content-Type: application/json
 
 ### 사용자, 메세지 보내기
 POST http://localhost:4000/api/chat/messages
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2MmYyZC05NTM1LTQ3ODctYTI4Yy02ZjE2NzIwOWMzMTYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYyYjllZmZjLTA0ZTQtNDI0Yy1hMDcwLTE3N2U3MTVlNjY4NCIsImlhdCI6MTc2Njg4MzQxMCwiZXhwIjoxNzY2ODg3MDEwfQ.cBgw0ZBs2yPNfeWHk09IPaU0j5WEpFLQ4CKvrub5_7Y
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2MmYyZC05NTM1LTQ3ODctYTI4Yy02ZjE2NzIwOWMzMTYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYyYjllZmZjLTA0ZTQtNDI0Yy1hMDcwLTE3N2U3MTVlNjY4NCIsImlhdCI6MTc2NjkwMjM0NiwiZXhwIjoxNzY2OTA1OTQ2fQ.xM9y9WuAeMBBwjnDA0I5pLfyA2oGutBFPuQzU2S-29c
 Content-Type: application/json
 
 {
   "conversationId": "9610f851-5e82-4659-a3a6-3cd248727507",
-  "content": "문의사항을 자세히 말씀해주세요 :)"
+  "content": "안녕하세요! 문의사항을 자세히 말씀해주세요 :)"
 }
 
 
