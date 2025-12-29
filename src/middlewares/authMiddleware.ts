@@ -9,17 +9,24 @@ export const authenticateToken = (
 ) => {
   // 1. 헤더에서 토큰 추출 (Authorization: Bearer <TOKEN>)
   const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const accessToken = authHeader && authHeader.split(" ")[1];
 
-  if (!token) {
-    return res.status(401).json({ message: "인증 토큰이 없습니다." });
+  if (!accessToken) {
+    return res.status(401).json({ message: "액세스 토큰이 없습니다." });
   }
 
-  // 2. 토큰 검증
-  jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
-    if (err) return res.sendStatus(403);
+  // 2. 액세스토큰 검증
+  jwt.verify(
+    accessToken,
+    process.env.JWT_ACCESS_SECRET as string,
+    (err, decoded) => {
+      if (err) {
+        console.error("JWT VERIFY ERROR:", err);
+        return res.sendStatus(403);
+      }
 
-    req.user = decoded as AuthUser;
-    next(); // 다음 단계(컨트롤러) 진행
-  });
+      req.user = decoded as AuthUser;
+      next(); // 다음 단계(컨트롤러) 진행
+    }
+  );
 };

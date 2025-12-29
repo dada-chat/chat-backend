@@ -4,6 +4,7 @@ import { createServer } from "http"; // Node.js 기본 모듈
 import { Server } from "socket.io"; // Socket.io
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import invitationRoutes from "./routes/invitationRoutes.js";
@@ -58,6 +59,7 @@ io.on("connection", (socket) => {
 // 미들웨어 설정
 app.use(cors()); // 다른 도메인(Next.js)에서의 요청 허용
 app.use(express.json()); // JSON 바디 파싱
+app.use(cookieParser());
 
 app.set("io", io);
 
@@ -79,4 +81,5 @@ app.use("/api/chat", chattingRoutes);
 // 서버 시작 : app.listen 대신 httpServer.listen
 httpServer.listen(PORT, () => {
   console.log(`# Server listening on port: ${PORT} !!!!!!!!!!!!!!!!!!!!!!!`);
+  console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
 });

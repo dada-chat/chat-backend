@@ -3,6 +3,8 @@ import {
   signupAdmin,
   signupInvitation,
   signin,
+  signout,
+  refresh,
 } from "../controllers/authController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
@@ -58,6 +60,8 @@ router.post("/signup/invitation", signupInvitation);
  *         description: 성공
  */
 router.post("/signin", signin);
+router.post("/signout", signout);
+router.post("/refresh", refresh);
 
 router.get("/home", authenticateToken, (req, res) => {
   res.json({

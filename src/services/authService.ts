@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/userRepository.js";
-import jwt from "jsonwebtoken";
+import { RefreshTokenRepository } from "../repositories/refreshTokenRepository.js";
+import { generateTokens } from "../utils/jwt.js";
 
 const userRepository = new UserRepository();
+const refreshTokenRepository = new RefreshTokenRepository();
 
 export class AuthService {
   async signupAdmin(data: {
@@ -55,21 +57,90 @@ export class AuthService {
       throw new Error("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 
-    // 3. JWT 토큰 발급
-    const token = jwt.sign(
-      { userId: user.id, role: user.role, organizationId: user.organizationId },
-      process.env.JWT_SECRET || "your-fallback-secret",
-      { expiresIn: "1h" } // 1시간 유효
-    );
+    const { accessToken, refreshToken } = generateTokens({
+      userId: user.id,
+      role: user.role,
+      organizationId: user.organizationId,
+    });
+
+    // 리프레시 토큰 만료일 설정 : 7일 후
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // DB에 리프레시 토큰 저장
+    await refreshTokenRepository.createRefreshToken({
+      refreshToken: refreshToken,
+      userId: user.id,
+      expiresAt,
+    });
 
     return {
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
         role: user.role,
       },
+    };
+  }
+
+  // 리프레시 토큰 삭제
+  async removeRefreshToken(refreshToken: string) {
+    await refreshTokenRepository.removeRefreshToken(refreshToken);
+  }
+
+  // 리프레시, (액세스) 토큰 재발급
+  async refreshTokens(currentRefreshToken: string) {
+    // 1. DB에서 refreshToken 조회 및 사용자 조회
+    const storedToken = await refreshTokenRepository.findByRefreshToken(
+      currentRefreshToken
+    );
+
+    if (!storedToken) {
+      throw new Error("해당 refresh token을 찾을 수 없습니다.");
+    }
+
+    const user = await userRepository.findById(storedToken.userId);
+    if (!user) {
+      await refreshTokenRepository.deleteRefreshTokenByUserId(
+        storedToken.userId
+      );
+      throw new Error("일치하는 계정을 찾을 수 없습니다.");
+    }
+
+    // 2. 만료 체크
+    if (storedToken.expiresAt < new Date()) {
+      await refreshTokenRepository.removeRefreshToken(currentRefreshToken);
+      throw new Error("refresh token이 만료되었습니다.");
+    }
+
+    // 3. 기존 토큰 삭제
+    await refreshTokenRepository.removeRefreshToken(currentRefreshToken);
+
+    // 4. 토큰 새로 발행
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      generateTokens({
+        userId: user.id,
+        role: user.role,
+        organizationId: user.organizationId,
+      });
+
+    // 리프레시 토큰 만료일 설정 : 7일 후
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // 5. 새 refreshToken 저장
+    await refreshTokenRepository.createRefreshToken({
+      refreshToken: newRefreshToken,
+      userId: storedToken.userId,
+      expiresAt,
+    });
+
+    return {
+      accessToken: newAccessToken,
+      newRefreshToken,
     };
   }
 }
