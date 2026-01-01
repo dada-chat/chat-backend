@@ -22,6 +22,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const allowedOrigins = [process.env.CLIENT_URL].filter(Boolean);
 
 // # Socket.io
 // 1. HTTP 서버 생성 (app.listen 대신 사용할 서버)
@@ -57,7 +58,21 @@ io.on("connection", (socket) => {
 });
 
 // 미들웨어 설정
-app.use(cors()); // 다른 도메인(Next.js)에서의 요청 허용
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // 서버 간 요청, Postman, curl 등
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS에 허용되지 않은 요청입니다."));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json()); // JSON 바디 파싱
 app.use(cookieParser());
 
@@ -81,5 +96,4 @@ app.use("/api/chat", chattingRoutes);
 // 서버 시작 : app.listen 대신 httpServer.listen
 httpServer.listen(PORT, () => {
   console.log(`# Server listening on port: ${PORT} !!!!!!!!!!!!!!!!!!!!!!!`);
-  console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
 });
