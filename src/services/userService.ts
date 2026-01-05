@@ -98,7 +98,7 @@ export class UserService {
       throw new Error("수정할 항목이 없습니다.");
     }
 
-    if (currentUser.role !== "ADMIN") {
+    if (currentUser.role !== "ADMIN" && currentUser.role !== "AGENT") {
       throw new Error("승인 권한이 없습니다.");
     }
 
