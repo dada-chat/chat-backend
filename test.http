@@ -63,21 +63,32 @@ Content-Type: application/json
 
 ### 회사 관리자 생성
 POST http://localhost:4000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NjgyNDIwMCwiZXhwIjoxNzY2ODI3ODAwfQ.uSKCkHqun3t0yK5tWtMD7Q55xIAJxIsvQnXYAcrSQl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNzQ2MmYyZC05NTM1LTQ3ODctYTI4Yy02ZjE2NzIwOWMzMTYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYyYjllZmZjLTA0ZTQtNDI0Yy1hMDcwLTE3N2U3MTVlNjY4NCIsImlhdCI6MTc2NzYxMDIxNywiZXhwIjoxNzY3NjEzODE3fQ.54Aj5vFuc_FVjhRc9AN0xb8V1SPX8-uii0BU4OH9dmE
 Content-Type: application/json
 
 {
-  "email": "agent_dada@blog.com",
+  "email": "portfolio@dada.com",
   "password": "password123",
-  "name": "블로그 관리자",
-  "role": "AGENT",
-  "organizationId":"62b9effc-04e4-424c-a070-177e715e6684"
+  "name": "블로그 매니저",
+  "role": "MANAGER",
+  "organizationId":"6158114a-17fe-46fc-8456-ffc57ead45eb"
 }
 
 
 ### 유저 status 상태 변경(ACTIVE)
 PATCH http://localhost:4000/api/users/approve/37462f2d-9535-4787-a28c-6f167209c316
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NjgyNDIwMCwiZXhwIjoxNzY2ODI3ODAwfQ.uSKCkHqun3t0yK5tWtMD7Q55xIAJxIsvQnXYAcrSQl0
+
+### 유저 정보 수정
+PATCH http://localhost:4000/api/users/0b7cf430-9e86-4947-9c01-cd5077b27451
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NzYyOTIxNywiZXhwIjoxNzY3NjMyODE3fQ.b46cG_G2A3Vm4Q-2SF6hgY1jNlfFvQJp4NbTdcf-7JE
+Content-Type: application/json
+
+{
+  "role": "MANAGER"
+}
+
+
 ### 유저 초대
 POST http://localhost:4000/api/invitations
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc2NTk4OCwiZXhwIjoxNzY2NzY5NTg4fQ.zwO7wxV7eLv435QaxC1pW5P1XwxJbrwWxyho0BJAvXg
@@ -123,8 +134,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxY
 
 
 ### 유저 목록 조회
+GET http://localhost:4000/api/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NzYyOTIxNywiZXhwIjoxNzY3NjMyODE3fQ.b46cG_G2A3Vm4Q-2SF6hgY1jNlfFvQJp4NbTdcf-7JE
+
+### 유저 목록 조회
 GET http://localhost:4000/api/organizations/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NjgyMzY3NSwiZXhwIjoxNzY2ODI3Mjc1fQ.plTLuIaiNaYUu2YMkMII7FntmOF5442DpBf0MPIxeP8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwOTM5N2FmNy1iZDZjLTQ3NGEtYWZlMS1mOGE5NmUwNzY1N2MiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2NzU5NzM0MiwiZXhwIjoxNzY3NjAwOTQyfQ.x_NIdx7Ou0vqypATxO8jAC4v7ZZtUgOlfg9Hr5aEVjs
 
 ### 도메인 등록 
 POST http://localhost:4000/api/domains

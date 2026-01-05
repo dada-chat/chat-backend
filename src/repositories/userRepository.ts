@@ -1,6 +1,6 @@
 import prisma from "../config/prisma.js";
 import { Role, UserStatus } from "@prisma/client";
-import type { CreateUserDto } from "../types/user.js";
+import type { CreateUserDto, UpdateUserDto } from "../types/user.js";
 
 export class UserRepository {
   async findByEmail(email: string) {
@@ -93,6 +93,14 @@ export class UserRepository {
     return prisma.user.update({
       where: { id: userId },
       data: { status },
+    });
+  }
+
+  // 사용자 정보 수정
+  async updateUserById(userId: string, data: UpdateUserDto) {
+    return prisma.user.update({
+      where: { id: userId },
+      data,
     });
   }
 }
