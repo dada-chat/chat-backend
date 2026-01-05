@@ -1,19 +1,18 @@
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/userRepository.js";
-import { InvitationRepository } from "../repositories/invitationRepository.js";
+import { OrganizationRepository } from "../repositories/organizationRepository.js";
 import { signupInvitationTx } from "../repositories/signupInvitation.tx.js";
-import type { CreateUserDto } from "../types/user.js";
+import type { CreateUserDto, UpdateUserDto } from "../types/user.js";
 import type { AuthUser } from "../types/express.js";
 import { Role, UserStatus } from "@prisma/client";
 import prisma from "../config/prisma.js";
 
 export class UserService {
   private userRepository = new UserRepository();
-  private invitationRepository = new InvitationRepository();
+  private organizationRepository = new OrganizationRepository();
 
   async registerUserInOrganization(data: CreateUserDto, currentUser: AuthUser) {
     let targetOrganizationId: string;
-    let initialStatus: UserStatus = UserStatus.PENDING;
 
     // 1. 권한 체크 계층 구조
     if (currentUser.role === "ADMIN") {
@@ -38,7 +37,6 @@ export class UserService {
       ...data,
       password: hashedPassword,
       organizationId: targetOrganizationId,
-      status: initialStatus,
     });
   }
 
@@ -90,5 +88,37 @@ export class UserService {
 
     // 그 외, 해당 조직 유저들만 반환
     return await this.userRepository.findByOrganization(user.organizationId);
+  }
+  async updateUser(
+    userId: string,
+    payload: UpdateUserDto,
+    currentUser: { role: Role }
+  ) {
+    if (Object.keys(payload).length === 0) {
+      throw new Error("수정할 항목이 없습니다.");
+    }
+
+    if (currentUser.role !== "ADMIN") {
+      throw new Error("승인 권한이 없습니다.");
+    }
+
+    // 사용자 존재 여부
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error("사용자를 찾을 수 없습니다.");
+    }
+
+    if (payload.organizationId) {
+      // 조직 존재 여부
+      const organization =
+        await this.organizationRepository.findByOrganizationId(
+          payload.organizationId
+        );
+      if (!organization) {
+        throw new Error("존재하지 않는 조직 ID입니다.");
+      }
+    }
+
+    return await this.userRepository.updateUserById(userId, payload);
   }
 }

@@ -39,4 +39,8 @@ export class OrganizationRepository {
       orderBy: { createdAt: "desc" },
     });
   }
+
+  async findByOrganizationId(organizationId: string) {
+    return prisma.organization.findUnique({ where: { id: organizationId } });
+  }
 }
