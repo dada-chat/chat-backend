@@ -99,7 +99,7 @@ export class UserService {
     }
 
     if (currentUser.role !== "ADMIN" && currentUser.role !== "AGENT") {
-      throw new Error("승인 권한이 없습니다.");
+      throw new Error("수정 권한이 없습니다.");
     }
 
     // 사용자 존재 여부

@@ -32,7 +32,7 @@ POST http://localhost:4000/api/auth/signin
 Content-Type: application/json
 
 {
-  "email": "agent_dada@blog.com",
+  "email": "manager_dada@blog.com",
   "password": "password123"
 }
 
@@ -71,7 +71,6 @@ Content-Type: application/json
   "password": "password123",
   "name": "블로그 매니저",
   "role": "MANAGER",
-  "organizationId":"6158114a-17fe-46fc-8456-ffc57ead45eb"
 }
 
 
@@ -92,18 +91,19 @@ Content-Type: application/json
 
 ### 유저 초대
 POST http://localhost:4000/api/invitations
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiZDg0OGJmZi0wNjZhLTQzMGYtOGVjNC0zNTYyYjYzNWZmOWQiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjYxNTgxMTRhLTE3ZmUtNDZmYy04NDU2LWZmYzU3ZWFkNDVlYiIsImlhdCI6MTc2Njc2NTk4OCwiZXhwIjoxNzY2NzY5NTg4fQ.zwO7wxV7eLv435QaxC1pW5P1XwxJbrwWxyho0BJAvXg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NzcwNzk4NCwiZXhwIjoxNzY3NzExNTg0fQ.VsFso70K53rUHJ8i3wv36H4slJqJWh5cpDTapfJGb9w
 Content-Type: application/json
 
 {
-  "email": "naver@naver.com",
-  "name": "네이버 계정",
-  "role": "MANAGER"
+  "email": "dadadadada@blog.com",
+  "name": "다X5",
+  "role": "MANAGER",
+  "organizationId":"6158114a-17fe-46fc-8456-ffc57ead45eb"
 }
 
 ### 초대 목록
 GET http://localhost:4000/api/invitations?status=accepted
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZDQ1NzM4OS0zODM1LTQzMDMtYmUxMS0yMzA2Nzg2MTFkNDYiLCJyb2xlIjoiQUdFTlQiLCJvcmdhbml6YXRpb25JZCI6IjIyODI4NzcyLTc3ZGUtNGFlOC1iOWFhLTQ0YTY4MmI4NDk5ZSIsImlhdCI6MTc2NjczODMzOSwiZXhwIjoxNzY2NzQxOTM5fQ.6du5gEvIzMFCbY10K4-soZGfGskzn77v53GDdjwvyUM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwZTliZTZhOS0yM2I5LTQyMTctOTU1Mi01ZjBiZjcwMTRhMzQiLCJyb2xlIjoiTUFOQUdFUiIsIm9yZ2FuaXphdGlvbklkIjoiNjJiOWVmZmMtMDRlNC00MjRjLWEwNzAtMTc3ZTcxNWU2Njg0IiwiaWF0IjoxNzY3Njg1OTY1LCJleHAiOjE3Njc2ODk1NjV9.pkDUMYgzx8iJzGCS1vUQX23rG5F2cTaik5vCO_2xELE
 
 ### 초대받은 유저, 링크를 타고 가입하는 상황
 POST http://localhost:4000/api/auth/signup/invitation
