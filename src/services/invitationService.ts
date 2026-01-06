@@ -1,29 +1,41 @@
 import type { Role } from "@prisma/client";
 import { InvitationRepository } from "../repositories/invitationRepository.js";
 import { sendInviteMail } from "./mailService.js";
+import type { AuthUser } from "../types/express.js";
+import type { CreateInvitationrDto } from "../types/invitation.js";
 
 export class InvitationService {
   private invitationRepository = new InvitationRepository();
 
-  async sendInvitation(data: {
-    email: string;
-    name: string;
-    role: Role;
-    organizationId: string;
-    invitedById: string;
-  }) {
-    // 1. 이미 해당 조직에 동일한 이메일로 대기 중인 초대가 있는지 확인
+  async sendInvitation(data: CreateInvitationrDto, inviter: AuthUser) {
+    if (inviter.role !== "ADMIN" && inviter.role !== "AGENT") {
+      throw new Error("초대 메일 권한이 없습니다.");
+    }
+
+    // 1. 이미 동일한 이메일로 대기 중인 초대가 있는지 확인
     const existing = await this.invitationRepository.findValidInvitation(
-      data.email,
-      data.organizationId
+      data.email
     );
 
     if (existing) {
       throw new Error("이미 해당 이메일로 보낸 메일 내역이 있습니다.");
     }
 
+    const targetOrganizationId =
+      inviter.role === "ADMIN" && data.organizationId
+        ? data.organizationId
+        : inviter.organizationId;
+
+    if (!targetOrganizationId) {
+      throw new Error("organizationId가 필요합니다.");
+    }
+
     // 2. 초대장 생성
-    const invitation = await this.invitationRepository.create(data);
+    const invitation = await this.invitationRepository.create({
+      ...data,
+      organizationId: targetOrganizationId,
+      invitedById: inviter.userId,
+    });
 
     const organization = await this.invitationRepository.findByIdWithOrg(
       invitation.id
@@ -36,7 +48,7 @@ export class InvitationService {
     try {
       await sendInviteMail(data.email, {
         name: data.name,
-        orgName: organization?.organization.name || "우리 회사",
+        orgName: organization?.organization.name || "다다챗",
         inviteLink: inviteLink,
       });
       console.log(`[Success] 초대 메일 발송 완료: ${data.email}`);
@@ -47,24 +59,30 @@ export class InvitationService {
     return invitation;
   }
 
-  async getInvitationList(organizationId: string, filter: string) {
-    switch (filter) {
-      case "accepted": // 수락 완료
-        return await this.invitationRepository.findAllByOrganization(
-          organizationId,
-          true
-        );
-      case "pending": // 미수락
-        return await this.invitationRepository.findAllByOrganization(
-          organizationId,
-          false
-        );
-      case "all": // 전체
-      default:
-        return await this.invitationRepository.findAllByOrganization(
-          organizationId
-        );
+  async getInvitationList(
+    currentUser: { role: string; organizationId: string },
+    status?: string,
+    organizationId?: string
+  ) {
+    // 1. status
+    let isAccepted: boolean | undefined;
+    if (status === "accepted") isAccepted = true;
+    else if (status === "pending") isAccepted = false;
+    else isAccepted = undefined;
+
+    // 2.organizationId
+    // 관리자
+    if (currentUser.role === "ADMIN") {
+      return await this.invitationRepository.findAllInvitations(
+        organizationId,
+        isAccepted
+      );
     }
+
+    return await this.invitationRepository.findAllByOrganization(
+      currentUser.organizationId,
+      isAccepted
+    );
   }
 
   // 초대 받은 정보

@@ -22,13 +22,11 @@ export class InvitationRepository {
     });
   }
 
-  // 이메일과 조직ID로 유효한 초대장 찾기
-  async findValidInvitation(email: string, organizationId: string) {
+  // 유효한 초대장 찾기
+  async findValidInvitation(email: string) {
     return prisma.invitation.findFirst({
       where: {
         email,
-        organizationId,
-        isAccepted: false,
       },
       include: {
         organization: {
@@ -59,6 +57,33 @@ export class InvitationRepository {
             name: true,
             email: true,
           },
+        },
+        organization: {
+          select: { name: true },
+        },
+      },
+      orderBy: { createdAt: "desc" }, // 최신순 정렬
+    });
+  }
+
+  async findAllInvitations(
+    organizationId?: string,
+    isAccepted?: boolean | undefined
+  ) {
+    return prisma.invitation.findMany({
+      where: {
+        ...(organizationId && { organizationId }),
+        ...(isAccepted !== undefined && { isAccepted }),
+      },
+      include: {
+        invitedBy: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+        organization: {
+          select: { name: true },
         },
       },
       orderBy: { createdAt: "desc" }, // 최신순 정렬

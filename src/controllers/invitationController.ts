@@ -4,40 +4,39 @@ import { InvitationService } from "../services/invitationService.js";
 const invitationService = new InvitationService();
 export const createInvitation = async (req: Request, res: Response) => {
   try {
-    const { email, name, role } = req.body;
     const inviter = req.user!; // 인증 미들웨어에서 넘어온 초대자 정보
 
     // 서비스 호출
-    const invitation = await invitationService.sendInvitation({
-      email,
-      name,
-      role,
-      organizationId: inviter.organizationId,
-      invitedById: inviter.userId,
-    });
+    const invitation = await invitationService.sendInvitation(
+      req.body,
+      inviter
+    );
 
     res.status(201).json({
+      success: true,
       message: "초대장이 생성되었습니다.",
       data: invitation,
     });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
 export const getInvitations = async (req: Request, res: Response) => {
   try {
-    const status = (req.query.status as string) || "all";
-    const organizationId = req.user!.organizationId;
+    const status = req.query.status as string | undefined;
+    const organizationId = req.query.organizationId as string | undefined;
+    const currentUser = req.user!;
 
     const invitations = await invitationService.getInvitationList(
-      organizationId,
-      status as string
+      currentUser,
+      status,
+      organizationId
     );
 
-    res.status(200).json({ data: invitations });
+    res.status(200).json({ success: true, data: invitations });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
