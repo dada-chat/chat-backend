@@ -34,24 +34,30 @@ export const getOrganizations = async (req: Request, res: Response) => {
       currentUser
     );
 
-    res.status(200).json({ data: organizations });
+    res.status(200).json({ success: true, data: organizations });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ success: false, message: error.message });
   }
 };
 
-export const getUsersInOrganization = async (req: Request, res: Response) => {
+export const getOrganizationById = async (req: Request, res: Response) => {
   try {
-    const currentUser = req.user!;
-    const { orgId } = req.query;
+    const { organizationId: id } = req.params;
 
-    const users = await organizationService.getUsers(
-      currentUser,
-      orgId as string
-    );
+    if (!id) {
+      return res.status(400).json({ message: "유효하지 않은 접근입니다." });
+    }
 
-    res.status(200).json({ data: users });
+    const organization = await organizationService.getOrganizationById(id);
+
+    res.status(200).json({
+      success: true,
+      data: organization,
+    });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

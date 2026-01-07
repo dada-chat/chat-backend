@@ -40,9 +40,9 @@ export const getInvitations = async (req: Request, res: Response) => {
   }
 };
 
-export const getInvitationDetail = async (req: Request, res: Response) => {
+export const getInvitationById = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { invitationId: id } = req.params;
 
     if (!id) {
       return res.status(400).json({ message: "비정상적인 접근입니다." });
@@ -52,13 +52,7 @@ export const getInvitationDetail = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      data: {
-        email: invitation.email,
-        name: invitation.name,
-        organizationId: invitation.organizationId,
-        organizationName: invitation.organization.name,
-        role: invitation.role,
-      },
+      data: invitation,
     });
   } catch (error: any) {
     // 서비스에서 throw한 구체적인 메시지를 응답

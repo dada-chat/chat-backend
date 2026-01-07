@@ -42,7 +42,7 @@ export class InvitationService {
     );
 
     // 4. 초대 링크 생성 (프론트엔드 가입 페이지 주소 + 초대 ID)
-    const inviteLink = `${process.env.CLIENT_URL}/signup?inviteId=${invitation.id}`;
+    const inviteLink = `${process.env.CLIENT_URL}/auth/signup?invitationId=${invitation.id}`;
     console.log(inviteLink, "-----------------------------");
     // 5. 메일 발송
     try {

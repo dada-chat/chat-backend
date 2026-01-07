@@ -3,7 +3,6 @@ import { UserRepository } from "../repositories/userRepository.js";
 
 export class OrganizationService {
   private organizationRepository = new OrganizationRepository();
-  private userRepository = new UserRepository();
 
   // 조직 생성
   async registerOrganization(data: { name: string }, user: { role: string }) {
@@ -22,20 +21,18 @@ export class OrganizationService {
     return await this.organizationRepository.findAllOrganizations();
   }
 
-  // 조직 소속 유저 목록 조회
-  async getUsers(
-    user: { role: string; organizationId: string },
-    targetOrgId?: string
-  ) {
-    // ADMIN인 경우, 모든 유저 조회
-    if (user.role === "ADMIN") {
-      if (targetOrgId) {
-        return await this.userRepository.findByOrganization(targetOrgId);
-      }
-      return await this.userRepository.findAllUsers();
+  async getOrganizationById(id: string) {
+    // 조직 데이터 조회
+    const organization = await this.organizationRepository.findByOrganizationId(
+      id
+    );
+
+    // 없는 경우
+    if (!organization) {
+      throw new Error("존재하지 않거나 유효하지 않은 접근입니다.");
     }
 
-    // 그 외, 해당 조직 유저들만 조회
-    return await this.userRepository.findByOrganization(user.organizationId);
+    // 통과 시 데이터 반환
+    return organization;
   }
 }

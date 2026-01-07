@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   createOrganization,
   getOrganizations,
-  getUsersInOrganization,
+  getOrganizationById,
 } from "../controllers/organizationController.js";
 import { authenticateToken } from "../middlewares/authMiddleware.js";
 
@@ -17,7 +17,7 @@ router.post("/", createOrganization);
 // 조직 목록 조회 (GET /api/organizations)
 router.get("/", getOrganizations);
 
-// 조직 내 유저 목록 조회 (GET /api/organizations/users)
-router.get("/users", getUsersInOrganization);
+// 조직 정보 조회(단건) (GET /api/organizations/:organizationId)
+router.get("/:organizationId", getOrganizationById);
 
 export default router;
