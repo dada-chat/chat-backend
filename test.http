@@ -102,11 +102,11 @@ Content-Type: application/json
 }
 
 ### 초대 목록
-GET http://localhost:4000/api/invitations?status=accepted
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwZTliZTZhOS0yM2I5LTQyMTctOTU1Mi01ZjBiZjcwMTRhMzQiLCJyb2xlIjoiTUFOQUdFUiIsIm9yZ2FuaXphdGlvbklkIjoiNjJiOWVmZmMtMDRlNC00MjRjLWEwNzAtMTc3ZTcxNWU2Njg0IiwiaWF0IjoxNzY3Njg1OTY1LCJleHAiOjE3Njc2ODk1NjV9.pkDUMYgzx8iJzGCS1vUQX23rG5F2cTaik5vCO_2xELE
+GET http://localhost:4000/api/invitations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwZTliZTZhOS0yM2I5LTQyMTctOTU1Mi01ZjBiZjcwMTRhMzQiLCJyb2xlIjoiTUFOQUdFUiIsIm9yZ2FuaXphdGlvbklkIjoiNjJiOWVmZmMtMDRlNC00MjRjLWEwNzAtMTc3ZTcxNWU2Njg0IiwiaWF0IjoxNzY3NzY3NTU1LCJleHAiOjE3Njc3NzExNTV9.mwJLv3HHDdSdVpkyyKE087OyWZPuxG_bT9EoW7ryJVE
 
 ### 초대받은 유저, 링크를 타고 가입하는 상황
-POST http://localhost:4000/api/auth/signup/invitation
+POST http://localhost:4000/api/auth/signup/invitation/
 Content-Type: application/json
 
 {
@@ -115,6 +115,10 @@ Content-Type: application/json
   "name": "장초대",
   "organizationId": "2e132fcd-bfb5-4eb2-b12c-c80568fc042e"
 }
+
+
+### 초대 정보 조회
+GET http://localhost:4000/api/invitations/490e6d41-9af1-4cb8-b75e-040299442783
 
 ### 조직 생성
 POST http://localhost:4000/api/organizations
@@ -127,11 +131,11 @@ Content-Type: application/json
 
 ### 조직 목록 조회 (어드민)
 GET http://localhost:4000/api/organizations
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NjgyMzE2MywiZXhwIjoxNzY2ODI2NzYzfQ.yXr2B3gvIWxrS8w4OK06WnhMzP7RKtquPSuppE3g5hQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2Nzc4NzU4MCwiZXhwIjoxNzY3NzkxMTgwfQ.G47QD9Z-rShZYQwYJ9wqLVIex6ZOr0SWhag5b1f44wQ
 
-### 특정 조직의 유저 조회(어드민)
-GET http://localhost:4000/api/organizations/users?orgId=62b9effc-04e4-424c-a070-177e715e6684
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2NjgwNzUxNywiZXhwIjoxNzY2ODExMTE3fQ.teCf5pBOkipCatxYmPDpAJuKzH8bBa9c4x99A1bMG6M
+### 특정 조직 정보 조회
+GET http://localhost:4000/api/organizations/2e132fcd-bfb5-4eb2-b12c-c80568fc042e
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMzYxYjFkZi1jMmRiLTRjODItYjJkZC1lODRkZjFlODEyODAiLCJyb2xlIjoiQURNSU4iLCJvcmdhbml6YXRpb25JZCI6IjJlMTMyZmNkLWJmYjUtNGViMi1iMTJjLWM4MDU2OGZjMDQyZSIsImlhdCI6MTc2Nzc4NzU4MCwiZXhwIjoxNzY3NzkxMTgwfQ.G47QD9Z-rShZYQwYJ9wqLVIex6ZOr0SWhag5b1f44wQ
 
 
 ### 유저 목록 조회

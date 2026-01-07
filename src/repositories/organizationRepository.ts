@@ -37,6 +37,14 @@ export class OrganizationRepository {
   async findAllOrganizations() {
     return prisma.organization.findMany({
       orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            users: true,
+            domains: true,
+          },
+        },
+      },
     });
   }
 
