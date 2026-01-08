@@ -21,12 +21,22 @@ export const authenticateToken = (
     process.env.JWT_ACCESS_SECRET as string,
     (err, decoded) => {
       if (err) {
-        console.error("JWT VERIFY ERROR:", err);
-        return res.sendStatus(403);
+        console.error("JWT VERIFY ERROR:", err.name);
+
+        // 토큰이 만료된 경우 (Expired)
+        if (err.name === "TokenExpiredError") {
+          return res.status(401).json({
+            message: "액세스 토큰이 만료되었습니다.",
+            code: "TOKEN_EXPIRED",
+          });
+        }
+
+        // 그 외 잘못된 토큰인 경우 (Invalid)
+        return res.status(403).json({ message: "유효하지 않은 토큰입니다." });
       }
 
       req.user = decoded as AuthUser;
-      next(); // 다음 단계(컨트롤러) 진행
+      next();
     }
   );
 };
