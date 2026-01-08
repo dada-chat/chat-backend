@@ -112,13 +112,18 @@ model Conversation {
   assignedUserId String?
   assignedUser   User?   @relation(fields: [assignedUserId], references: [id])
 
+  firstMessageAt DateTime?
+  // 마지막 메세지 시간
+  lastMessageAt  DateTime  @default(now())
+
   // 방문자 정보
   visitorId String
   visitor   Visitor @relation(fields: [visitorId], references: [id])
 
-  messages  Message[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  messages          Message[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  MessageReadStatus MessageReadStatus[]
 }
 
 enum ConversationStatus {
@@ -139,9 +144,29 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id])
 
   createdAt DateTime @default(now())
+
+  // 인덱스 추가
+  @@index([conversationId, createdAt])
+}
+
+model MessageReadStatus {
+  id String @id @default(uuid())
+
+  readerId   String
+  readerType SenderType
+
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+
+  lastReadAt DateTime @default(now())
+
+  // 복합키
+  @@unique([readerId, readerType, conversationId])
+  @@index([conversationId])
 }
 
 enum SenderType {
   VISITOR
+  SYSTEM
   USER
 }
