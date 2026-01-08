@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   signupAdmin,
+  signUpWithOrganization,
   signupInvitation,
   signin,
   signout,
@@ -36,6 +37,7 @@ const router = Router();
  *         description: 성공
  */
 router.post("/signup/admin", signupAdmin);
+router.post("/signup", signUpWithOrganization);
 router.post("/signup/invitation", signupInvitation);
 
 /**

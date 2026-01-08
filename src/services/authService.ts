@@ -1,32 +1,106 @@
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/userRepository.js";
 import { RefreshTokenRepository } from "../repositories/refreshTokenRepository.js";
+import { InvitationRepository } from "../repositories/invitationRepository.js";
 import { generateTokens } from "../utils/jwt.js";
+import type { UserRole } from "../types/user.js";
 
 const userRepository = new UserRepository();
 const refreshTokenRepository = new RefreshTokenRepository();
+const invitationRepository = new InvitationRepository();
 
 export class AuthService {
+  private async validateAndEncrypt(email: string, password: string) {
+    // 1. 중복 이메일 확인
+    const existingUser = await userRepository.findByEmail(email);
+    if (existingUser) throw new Error("이미 존재하는 이메일입니다.");
+
+    // 2. 비밀번호 암호화
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return hashedPassword;
+  }
+
   async signupAdmin(data: {
     email: string;
     password: string;
     name: string;
     organizationName: string;
   }) {
-    // 1. 중복 이메일 확인
-    const existingUser = await userRepository.findByEmail(data.email);
-    if (existingUser) {
-      throw new Error("이미 존재하는 이메일입니다.");
-    }
-
-    // 2. 비밀번호 암호화
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await this.validateAndEncrypt(
+      data.email,
+      data.password
+    );
 
     // 3. 레포지토리를 통한 생성
     return userRepository.createAdminWithOrganization({
       ...data,
       passwordHash: hashedPassword,
     });
+  }
+
+  async signUpWithOrganization(data: {
+    email: string;
+    password: string;
+    name: string;
+    organizationName: string;
+  }) {
+    if (!data.organizationName) {
+      throw new Error("회사명 정보가 필요합니다.");
+    }
+
+    const hashedPassword = await this.validateAndEncrypt(
+      data.email,
+      data.password
+    );
+
+    // 사용
+    const newUser = await userRepository.createUserWithOrganization({
+      email: data.email,
+      passwordHash: hashedPassword,
+      name: data.name,
+      organizationName: data.name,
+    });
+
+    return newUser;
+  }
+
+  async signUpByInvitation(data: {
+    email: string;
+    password: string;
+    name: string;
+    organizationName: string;
+    role: UserRole;
+    organizationId: string;
+    invitationId: string;
+  }) {
+    if (!data.organizationName) {
+      throw new Error("회사명 정보가 필요합니다.");
+    }
+
+    const hashedPassword = await this.validateAndEncrypt(
+      data.email,
+      data.password
+    );
+
+    // 초대 회원가입 경우, invitationId 유무 확인
+    const invitation = await invitationRepository.findById(data.invitationId);
+
+    if (!invitation) {
+      throw new Error("유효하지 않거나 만료된 초대 메일입니다.");
+    }
+
+    // 사용자 생성 및 초대 상태 변경
+    const newUser = await userRepository.createUserByInvitation({
+      email: data.email,
+      passwordHash: hashedPassword,
+      name: data.name,
+      organizationId: invitation.organizationId,
+      role: data.role,
+      organizationName: data.name,
+      invitationId: data.invitationId,
+    });
+
+    return newUser;
   }
 
   async signin(data: { email: string; password: string }) {
@@ -39,7 +113,7 @@ export class AuthService {
     // 유저 상태에 따른 에러메세지
     if (user.status === "PENDING") {
       throw new Error(
-        "아직 승인되지 않은 계정입니다. 관리자 승인 후 이용해주세요."
+        "아직 사용 승인되지 않은 계정입니다. 관리자 승인 후 이용해주세요."
       );
     }
 

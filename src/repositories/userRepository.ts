@@ -1,6 +1,6 @@
 import prisma from "../config/prisma.js";
 import { Role, UserStatus } from "@prisma/client";
-import type { CreateUserDto, UpdateUserDto } from "../types/user.js";
+import type { CreateUserDto, UpdateUserDto, UserRole } from "../types/user.js";
 
 export class UserRepository {
   async findByEmail(email: string) {
@@ -36,6 +36,66 @@ export class UserRepository {
       });
 
       return { user, organization };
+    });
+  }
+
+  // 일반 회원가입
+  async createUserWithOrganization(data: {
+    email: string;
+    passwordHash: string;
+    name: string;
+    organizationName: string;
+  }) {
+    // Prisma 트랜잭션을 사용하여 조직 & 유저 생성
+    return prisma.$transaction(async (tx) => {
+      const organization = await tx.organization.create({
+        data: { name: data.organizationName },
+      });
+
+      const user = await tx.user.create({
+        data: {
+          email: data.email,
+          passwordHash: data.passwordHash,
+          name: data.name,
+          role: Role.AGENT,
+          status: UserStatus.PENDING,
+          organizationId: organization.id,
+        },
+      });
+
+      return { user, organization };
+    });
+  }
+
+  // 초대 회원가입
+  async createUserByInvitation(data: {
+    email: string;
+    passwordHash: string;
+    name: string;
+    role: UserRole;
+    organizationId: string;
+    organizationName: string;
+    invitationId: string;
+  }) {
+    // Prisma 트랜잭션을 사용하여 유저 생성 & 초대 상태 변경
+    return prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: data.email,
+          passwordHash: data.passwordHash,
+          name: data.name,
+          role: data.role as Role,
+          status: UserStatus.ACTIVE,
+          organizationId: data.organizationId,
+        },
+      });
+
+      const invitation = await tx.invitation.update({
+        where: { id: data.invitationId },
+        data: { isAccepted: true },
+      });
+
+      return { user, invitation };
     });
   }
 

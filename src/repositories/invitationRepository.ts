@@ -101,4 +101,10 @@ export class InvitationRepository {
       },
     });
   }
+
+  async findById(id: string) {
+    return prisma.invitation.findUnique({
+      where: { id },
+    });
+  }
 }

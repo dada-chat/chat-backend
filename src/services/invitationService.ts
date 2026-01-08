@@ -98,7 +98,7 @@ export class InvitationService {
     // 3. 이미 수락(가입 완료)된 초대장인 경우
     if (invitation.isAccepted) {
       throw new Error(
-        "이미 활성화된 계정입니다. 해당 계정으로 바로 로그인 가능한 상태입니다."
+        "이미 활성화된 계정입니다.\n해당 계정으로 바로 로그인 가능한 상태입니다."
       );
     }
 

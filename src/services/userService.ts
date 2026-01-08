@@ -1,11 +1,8 @@
 import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/userRepository.js";
 import { OrganizationRepository } from "../repositories/organizationRepository.js";
-import { signupInvitationTx } from "../repositories/signupInvitation.tx.js";
-import type { CreateUserDto, UpdateUserDto } from "../types/user.js";
+import type { CreateUserDto, UpdateUserDto, UserRole } from "../types/user.js";
 import type { AuthUser } from "../types/express.js";
-import { Role, UserStatus } from "@prisma/client";
-import prisma from "../config/prisma.js";
 
 export class UserService {
   private userRepository = new UserRepository();
@@ -42,7 +39,7 @@ export class UserService {
 
   async approveStatusChange(
     targetUserId: string,
-    agentUser: { organizationId: string; role: Role }
+    agentUser: { organizationId: string; role: UserRole }
   ) {
     // 1. 권한 확인: AGENT 이상만 승인 가능
     if (agentUser.role !== "ADMIN" && agentUser.role !== "AGENT") {
@@ -59,26 +56,6 @@ export class UserService {
     return await this.userRepository.updateStatus(targetUserId, "ACTIVE");
   }
 
-  async registerInvitation(data: {
-    invitationId: string;
-    password: string;
-    name: string;
-  }) {
-    const passwordHash = await bcrypt.hash(data.password, 10);
-
-    return prisma.$transaction(async (tx) => {
-      try {
-        return await signupInvitationTx(tx, {
-          invitationId: data.invitationId,
-          passwordHash,
-          name: data.name,
-        });
-      } catch {
-        throw new Error("유효하지 않거나 이미 사용된 초대장입니다.");
-      }
-    });
-  }
-
   // 유저 목록 조회
   async getUsers(user: { role: string; organizationId: string }) {
     // ADMIN인 경우, 모든 유저
@@ -92,7 +69,7 @@ export class UserService {
   async updateUser(
     userId: string,
     payload: UpdateUserDto,
-    currentUser: { role: Role }
+    currentUser: { role: UserRole }
   ) {
     if (Object.keys(payload).length === 0) {
       throw new Error("수정할 항목이 없습니다.");
