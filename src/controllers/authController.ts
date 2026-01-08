@@ -1,17 +1,16 @@
 import type { Request, Response } from "express";
 import { AuthService } from "../services/authService.js";
-import { UserService } from "../services/userService.js";
 import { refreshTokenCookieOptions } from "../utils/cookieOptions.js";
 
 const authService = new AuthService();
-const userService = new UserService();
 
+// 내부 관리자 회원가입 (프론트 X)
 export const signupAdmin = async (req: Request, res: Response) => {
   try {
     const result = await authService.signupAdmin(req.body);
 
     res.status(201).json({
-      message: "회원가입 성공",
+      success: true,
       data: {
         userId: result.user.id,
         organizationId: result.organization.id,
@@ -22,6 +21,45 @@ export const signupAdmin = async (req: Request, res: Response) => {
   }
 };
 
+// 일반 회원가입
+export const signUpWithOrganization = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.signUpWithOrganization(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        userId: result.user.id,
+        organizationId: result.organization.id,
+      },
+    });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// 초대 회원가입
+export const signupInvitation = async (req: Request, res: Response) => {
+  try {
+    const result = await authService.signUpByInvitation(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: {
+        userId: result.user.id,
+        organizationId: result.invitation.organizationId,
+        email: result.user.email,
+      },
+    });
+  } catch (error: any) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// 로그인
 export const signin = async (req: Request, res: Response) => {
   try {
     const { accessToken, refreshToken, user } = await authService.signin(
@@ -39,29 +77,6 @@ export const signin = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     res.status(401).json({ message: error.message });
-  }
-};
-
-export const signupInvitation = async (req: Request, res: Response) => {
-  try {
-    const { invitationId, password, name } = req.body;
-
-    const user = await userService.registerInvitation({
-      invitationId,
-      password,
-      name,
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "회원가입이 완료되었습니다.",
-      data: { userId: user.id, email: user.email },
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
   }
 };
 

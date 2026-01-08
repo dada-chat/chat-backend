@@ -3,10 +3,10 @@ POST http://localhost:4000/api/auth/signup/admin
 Content-Type: application/json
 
 {
-  "email": "admin_dada@dada.com",
+  "email": "dada4dev@dev.com",
   "password": "password123!",
   "name": "다다",
-  "organizationName": "포트폴리오"
+  "organizationName": "devDADA"
 }
 
 ### 로그인 테스트
