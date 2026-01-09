@@ -6,6 +6,7 @@ import {
   getConversationList,
   getConversationDetail,
   updateConversationStatus,
+  markConversationAsRead,
 } from "../controllers/chattingController.js";
 
 const router = Router();
@@ -23,7 +24,7 @@ router.get(
   getConversationDetail
 );
 
-// 특정 채팅방의 메세지 조회
+// 특정 채팅방 상태 변경(종료)
 router.patch(
   "/conversations/:conversationId/status",
   authenticateToken,
@@ -31,4 +32,11 @@ router.patch(
   updateConversationStatus
 );
 
+//
+router.post(
+  "/conversations/:conversationId/read",
+  authenticateToken,
+  conversationIdParams,
+  markConversationAsRead
+);
 export default router;
