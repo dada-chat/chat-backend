@@ -74,6 +74,7 @@ export class ConversationService {
       throw new Error("해당 조직의 데이터를 조회할 권한이 없습니다.");
     }
     return this.conversationRepository.findConversationListByOrganization(
+      currentUser.userId,
       targetOrgId
     );
   }
@@ -108,5 +109,17 @@ export class ConversationService {
 
     // 2. 상태 업데이트
     return this.conversationRepository.updateStatus(conversationId, status);
+  }
+
+  // 채팅방 , 메세지 상태 읽음 처리
+  async markConversationAsRead(conversationId: string, currentUser: AuthUser) {
+    // 1. 권한 체크
+    const conversation = await this.validateAccess(conversationId, currentUser);
+
+    // 2. 읽음 상태 업데이트
+    return this.conversationRepository.updateMessageReadStatus(
+      conversationId,
+      currentUser.userId
+    );
   }
 }

@@ -27,7 +27,10 @@ export const sendMessage = async (req: Request, res: Response) => {
       updatedAt: message.createdAt,
     });
 
-    res.status(201).json({ success: true, data: message });
+    res.status(201).json({
+      success: true,
+      message: "메세지가 성공적으로 전송되었습니다 :)",
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -66,14 +69,14 @@ export const getConversationDetail = async (req: Request, res: Response) => {
     const { conversationId } = req.params;
     const currentUser = req.user!;
 
-    const detail = await conversationService.getConversationDetail(
+    const conversation = await conversationService.getConversationDetail(
       currentUser,
       conversationId!
     );
 
     res.status(200).json({
       success: true,
-      data: detail,
+      data: conversation,
     });
   } catch (error: any) {
     const status = error.message.includes("요청하신 정보를 찾을 수 없습니다")
@@ -107,11 +110,39 @@ export const updateConversationStatus = async (req: Request, res: Response) => {
       status: updated.status,
     });
 
+    const message =
+      updated.status === "OPEN"
+        ? "채팅방 상태가 활성화되었습니다."
+        : "채팅방 상태가 종료되었습니다.";
+
     res.status(200).json({
       success: true,
-      data: updated,
+      message: message,
     });
   } catch (error: any) {
     res.status(403).json({ success: false, message: error.message });
+  }
+};
+
+export const markConversationAsRead = async (req: Request, res: Response) => {
+  try {
+    const { conversationId } = req.params;
+    const currentUser = req.user!;
+
+    await conversationService.markConversationAsRead(
+      conversationId!,
+      currentUser
+    );
+
+    return res.json({
+      success: true,
+      message: "최근 메세지 모두 읽음 상태로 변경되었습니다.",
+    });
+  } catch (error) {
+    console.error("markConversationAsRead error", error);
+    return res.status(500).json({
+      success: false,
+      message: "읽음 상태 변경이 실패했습니다.",
+    });
   }
 };
