@@ -23,6 +23,15 @@ export class MessageRepository {
         data: { updatedAt: new Date(), lastMessageAt: new Date() },
       });
 
+      // 읽음 상태 업데이트
+      await tx.messageReadStatus.updateMany({
+        where: {
+          conversationId: data.conversationId,
+          readerId: data.senderId,
+        },
+        data: { lastReadAt: new Date() },
+      });
+
       return newMessage;
     });
   }

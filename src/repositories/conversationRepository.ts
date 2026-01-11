@@ -168,9 +168,24 @@ export class ConversationRepository {
 
   // 대화방 상태 변경
   async updateStatus(conversationId: string, status: ConversationStatus) {
-    return prisma.conversation.update({
-      where: { id: conversationId },
-      data: { status },
+    return await prisma.$transaction(async (tx) => {
+      const conversation = await tx.conversation.update({
+        where: { id: conversationId },
+        data: { status },
+      });
+
+      if (conversation.status === "CLOSED") {
+        await tx.message.create({
+          data: {
+            content: "상담이 종료된 채팅방입니다. 새로운 상담을 시작해 주세요.",
+            senderType: "SYSTEM",
+            senderId: "system",
+            conversationId: conversation.id,
+          },
+        });
+      }
+
+      return conversation;
     });
   }
 
