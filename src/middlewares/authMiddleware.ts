@@ -27,7 +27,6 @@ export const authenticateToken = (
         if (err.name === "TokenExpiredError") {
           return res.status(401).json({
             message: "액세스 토큰이 만료되었습니다.",
-            code: "TOKEN_EXPIRED",
           });
         }
 

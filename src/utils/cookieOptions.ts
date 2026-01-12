@@ -6,6 +6,6 @@ export const refreshTokenCookieOptions: CookieOptions = {
   httpOnly: true,
   secure: isProd,
   sameSite: isProd ? "none" : "lax",
-  path: "/api/auth/refresh",
+  path: "/",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
 };
