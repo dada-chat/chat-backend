@@ -98,6 +98,7 @@ export const signout = async (req: Request, res: Response) => {
     // 쿠키 삭제
     res.clearCookie("refreshToken", {
       path: refreshTokenCookieOptions.path,
+      httpOnly: true,
     });
 
     return res.sendStatus(204);
