@@ -9,9 +9,13 @@ export class ConversationRepository {
         visitorId,
         domainId,
         status: "OPEN",
-      },
-      include: {
-        messages: true,
+        messages: {
+          create: {
+            senderType: "SYSTEM" as SenderType,
+            content: "상담 채팅을 시작할 수 있어요 :)",
+            senderId: "system",
+          },
+        },
       },
     });
   }
@@ -26,12 +30,6 @@ export class ConversationRepository {
       },
       orderBy: {
         updatedAt: "desc",
-      },
-      include: {
-        messages: {
-          orderBy: { createdAt: "desc" },
-          take: 30,
-        },
       },
     });
   }
@@ -113,6 +111,7 @@ export class ConversationRepository {
 
         return {
           id: conv.id,
+          status: conv.status,
           visitorName: conv.visitor.name,
           lastMessage: lastMessage?.content || "채팅 메세지가 없습니다.",
           lastMessageAt: conv.lastMessageAt,
@@ -127,7 +126,15 @@ export class ConversationRepository {
   }
 
   // 대화방 상세 및 모든 메시지 조회
-  async findDetailWithMessages(conversationId: string) {
+  async findDetailWithMessages(
+    conversationId: string,
+    options?: {
+      limit: number;
+      cursor?: Date;
+    }
+  ) {
+    const limit = options?.limit ?? 30;
+
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
@@ -137,8 +144,13 @@ export class ConversationRepository {
         },
         domain: true, // 권한 체크(organizationId)를 위해 필요
         messages: {
+          where: {
+            ...(options?.cursor && {
+              createdAt: { lt: options.cursor },
+            }),
+          },
           orderBy: { createdAt: "desc" },
-          take: 30, // 최근 30개
+          take: limit + 1,
         },
       },
     });
@@ -155,6 +167,11 @@ export class ConversationRepository {
       orderBy: { createdAt: "desc" },
     });
 
+    const hasMore = conversation.messages.length > limit;
+    const items = hasMore
+      ? conversation.messages.slice(0, limit)
+      : conversation.messages;
+
     return {
       ...conversation,
       assignedUser: conversation.assignedUser
@@ -163,6 +180,9 @@ export class ConversationRepository {
             lastAnsweredAt: lastUserMessage?.createdAt || null,
           }
         : null,
+      messages: items.reverse(),
+      hasMore,
+      nextCursor: hasMore ? items[0]?.createdAt : null,
     };
   }
 
@@ -174,8 +194,9 @@ export class ConversationRepository {
         data: { status },
       });
 
+      let message;
       if (conversation.status === "CLOSED") {
-        await tx.message.create({
+        message = await tx.message.create({
           data: {
             content: "상담이 종료된 채팅방입니다. 새로운 상담을 시작해 주세요.",
             senderType: "SYSTEM",
@@ -185,7 +206,10 @@ export class ConversationRepository {
         });
       }
 
-      return conversation;
+      return {
+        ...conversation,
+        message,
+      };
     });
   }
 

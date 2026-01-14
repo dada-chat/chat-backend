@@ -29,6 +29,7 @@ export const sendMessage = async (req: Request, res: Response) => {
 
     res.status(201).json({
       success: true,
+      data: message,
       message: "메세지가 성공적으로 전송되었습니다 :)",
     });
   } catch (error: any) {
@@ -66,12 +67,17 @@ export const getConversationList = async (req: Request, res: Response) => {
 
 export const getConversationDetail = async (req: Request, res: Response) => {
   try {
-    const { conversationId } = req.params;
+    const { conversationId } = req.conversation!;
+    const { cursor, limit } = req.query;
     const currentUser = req.user!;
+
+    const parsedCursor = cursor ? new Date(cursor as string) : undefined;
+    const take = Number(limit);
 
     const conversation = await conversationService.getConversationDetail(
       currentUser,
-      conversationId!
+      conversationId,
+      { limit: take, ...(parsedCursor && { cursor: parsedCursor }) }
     );
 
     res.status(200).json({
@@ -105,6 +111,7 @@ export const updateConversationStatus = async (req: Request, res: Response) => {
     );
 
     const io = req.app.get("io");
+    io.to(conversationId).emit(SOCKET_EVENTS.MESSAGE_RECEIVED, updated.message);
     io.to(conversationId).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_STATUS, {
       conversationId,
       status: updated.status,
@@ -117,6 +124,7 @@ export const updateConversationStatus = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
+      data: updated.message,
       message: message,
     });
   } catch (error: any) {
