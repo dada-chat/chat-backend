@@ -126,7 +126,15 @@ export class ConversationRepository {
   }
 
   // 대화방 상세 및 모든 메시지 조회
-  async findDetailWithMessages(conversationId: string) {
+  async findDetailWithMessages(
+    conversationId: string,
+    options?: {
+      limit: number;
+      cursor?: Date;
+    }
+  ) {
+    const limit = options?.limit ?? 30;
+
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
@@ -136,8 +144,13 @@ export class ConversationRepository {
         },
         domain: true, // 권한 체크(organizationId)를 위해 필요
         messages: {
+          where: {
+            ...(options?.cursor && {
+              createdAt: { lt: options.cursor },
+            }),
+          },
           orderBy: { createdAt: "desc" },
-          take: 30, // 최근 30개
+          take: limit + 1,
         },
       },
     });
@@ -154,6 +167,11 @@ export class ConversationRepository {
       orderBy: { createdAt: "desc" },
     });
 
+    const hasMore = conversation.messages.length > limit;
+    const items = hasMore
+      ? conversation.messages.slice(0, limit)
+      : conversation.messages;
+
     return {
       ...conversation,
       assignedUser: conversation.assignedUser
@@ -162,6 +180,9 @@ export class ConversationRepository {
             lastAnsweredAt: lastUserMessage?.createdAt || null,
           }
         : null,
+      messages: items.reverse(),
+      hasMore,
+      nextCursor: hasMore ? items[0]?.createdAt : null,
     };
   }
 

@@ -21,6 +21,7 @@ router.get("/conversations", authenticateToken, getConversationList);
 router.get(
   "/conversations/:conversationId",
   authenticateToken,
+  conversationIdParams,
   getConversationDetail
 );
 

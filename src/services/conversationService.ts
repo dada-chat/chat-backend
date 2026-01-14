@@ -80,9 +80,19 @@ export class ConversationService {
   }
 
   // 특정 채팅방, 메세지 내역 조회
-  async getConversationDetail(currentUser: AuthUser, conversationId: string) {
+  async getConversationDetail(
+    currentUser: AuthUser,
+    conversationId: string,
+    options?: {
+      limit: number;
+      cursor?: Date;
+    }
+  ) {
     const conversation =
-      await this.conversationRepository.findDetailWithMessages(conversationId);
+      await this.conversationRepository.findDetailWithMessages(
+        conversationId,
+        options
+      );
 
     if (!conversation) {
       throw new Error("대화방을 찾을 수 없습니다.");
