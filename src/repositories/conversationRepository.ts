@@ -9,6 +9,13 @@ export class ConversationRepository {
         visitorId,
         domainId,
         status: "OPEN",
+        messages: {
+          create: {
+            senderType: "SYSTEM" as SenderType,
+            content: "상담 채팅을 시작할 수 있어요 :)",
+            senderId: "system",
+          },
+        },
       },
       include: {
         messages: true,

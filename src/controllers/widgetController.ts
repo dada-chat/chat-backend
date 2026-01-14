@@ -7,7 +7,7 @@ import { SOCKET_EVENTS } from "../shared/socketEvents.js";
 const widgetService = new WidgetService();
 const messageService = new MessageService();
 
-export const initChat = async (req: Request, res: Response) => {
+export const joinChat = async (req: Request, res: Response) => {
   try {
     const { email, name } = req.body;
     const { domainId } = req.widget!;
@@ -29,9 +29,26 @@ export const initChat = async (req: Request, res: Response) => {
   }
 };
 
+// conversationId 관련 메세지 목록 조회
+export const getMessages = async (req: Request, res: Response) => {
+  try {
+    const { conversationId } = req.params;
+
+    const result = await widgetService.getMessages(conversationId!);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const sendWidgetMessage = async (req: Request, res: Response) => {
   try {
-    const { content, conversationId, visitorId } = req.body;
+    const { conversationId } = req.params;
+    const { content, visitorId } = req.body;
 
     if (!content || !conversationId || !visitorId) {
       return res.status(400).json({
@@ -41,7 +58,7 @@ export const sendWidgetMessage = async (req: Request, res: Response) => {
       });
     }
 
-    // 💡 위젯에서 보내면, senderType은 항상 "VISITOR"
+    // 위젯에서 보내면, senderType은 항상 "VISITOR"
     const message = await messageService.sendMessage({
       content,
       conversationId,
@@ -53,12 +70,6 @@ export const sendWidgetMessage = async (req: Request, res: Response) => {
     const io = req.app.get("io");
     // 대화방에 메시지 전송
     io.to(conversationId).emit(SOCKET_EVENTS.MESSAGE_RECEIVED, message);
-    const orgId = message.conversation.domain.organizationId;
-    io.to(`org_${orgId}`).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_LIST, {
-      conversationId,
-      lastMessage: content,
-      updatedAt: message.createdAt,
-    });
 
     res.status(201).json({
       success: true,

@@ -22,7 +22,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const allowedOrigins = [process.env.CLIENT_URL].filter(Boolean);
+const isProd = process.env.NODE_ENV === "production";
 
 // # Socket.io
 // 1. HTTP 서버 생성 (app.listen 대신 사용할 서버)
@@ -61,14 +61,14 @@ io.on("connection", (socket) => {
 app.use(
   cors({
     origin: (origin, callback) => {
-      // 서버 간 요청, Postman, curl 등
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS에 허용되지 않은 요청입니다."));
+      // 개발 환경(localhost)은 무조건 통과
+      if (!isProd && origin.includes("localhost")) {
+        return callback(null, true);
       }
+
+      callback(null, origin);
     },
     credentials: true,
   })

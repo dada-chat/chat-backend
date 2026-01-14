@@ -1,9 +1,11 @@
 import { VisitorRepository } from "../repositories/visitorRepository.js";
 import { ConversationRepository } from "../repositories/conversationRepository.js";
+import { MessageRepository } from "../repositories/messageRepository.js";
 
 export class WidgetService {
   private visitorRepository = new VisitorRepository();
   private conversationRepository = new ConversationRepository();
+  private messageRepository = new MessageRepository();
 
   async initializeChat(
     email: string,
@@ -31,5 +33,18 @@ export class WidgetService {
       visitor,
       conversation,
     };
+  }
+
+  async getMessages(conversationId: string) {
+    // 1. 채팅방이 있는지 확인
+    const conversation = await this.conversationRepository.findByIdWithDomain(
+      conversationId
+    );
+
+    if (!conversation) {
+      throw new Error("채팅방을 찾을 수 없습니다.");
+    }
+
+    return await this.messageRepository.findMessageList(conversationId);
   }
 }
