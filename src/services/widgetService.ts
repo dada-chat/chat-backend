@@ -53,10 +53,15 @@ export class WidgetService {
       throw new Error("채팅방을 찾을 수 없습니다.");
     }
 
-    return await this.messageRepository.findMessageList(
+    const messageCursorResult = await this.messageRepository.findMessageList(
       conversationId,
       limit,
       cursor
     );
+
+    return {
+      conversationStatus: conversation.status,
+      messageCursorResult,
+    };
   }
 }

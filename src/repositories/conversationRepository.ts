@@ -17,9 +17,6 @@ export class ConversationRepository {
           },
         },
       },
-      include: {
-        messages: true,
-      },
     });
   }
 
@@ -33,12 +30,6 @@ export class ConversationRepository {
       },
       orderBy: {
         updatedAt: "desc",
-      },
-      include: {
-        messages: {
-          orderBy: { createdAt: "desc" },
-          take: 30,
-        },
       },
     });
   }
@@ -181,8 +172,9 @@ export class ConversationRepository {
         data: { status },
       });
 
+      let message;
       if (conversation.status === "CLOSED") {
-        await tx.message.create({
+        message = await tx.message.create({
           data: {
             content: "상담이 종료된 채팅방입니다. 새로운 상담을 시작해 주세요.",
             senderType: "SYSTEM",
@@ -192,7 +184,10 @@ export class ConversationRepository {
         });
       }
 
-      return conversation;
+      return {
+        ...conversation,
+        message,
+      };
     });
   }
 
