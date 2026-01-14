@@ -35,7 +35,15 @@ export class WidgetService {
     };
   }
 
-  async getMessages(conversationId: string) {
+  async getMessages({
+    conversationId,
+    limit,
+    cursor,
+  }: {
+    conversationId: string;
+    limit: number;
+    cursor?: Date;
+  }) {
     // 1. 채팅방이 있는지 확인
     const conversation = await this.conversationRepository.findByIdWithDomain(
       conversationId
@@ -45,6 +53,10 @@ export class WidgetService {
       throw new Error("채팅방을 찾을 수 없습니다.");
     }
 
-    return await this.messageRepository.findMessageList(conversationId);
+    return await this.messageRepository.findMessageList(
+      conversationId,
+      limit,
+      cursor
+    );
   }
 }

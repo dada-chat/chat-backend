@@ -32,9 +32,18 @@ export const joinChat = async (req: Request, res: Response) => {
 // conversationId 관련 메세지 목록 조회
 export const getMessages = async (req: Request, res: Response) => {
   try {
-    const { conversationId } = req.params;
+    const { conversationId } = req.conversation!;
+    const { cursor, limit } = req.query;
 
-    const result = await widgetService.getMessages(conversationId!);
+    // cursor는 string | undefined
+    const parsedCursor = cursor ? new Date(cursor as string) : undefined;
+    const take = Number(limit);
+
+    const result = await widgetService.getMessages({
+      conversationId,
+      limit: take,
+      ...(parsedCursor && { cursor: parsedCursor }),
+    });
 
     res.status(200).json({
       success: true,
@@ -47,10 +56,10 @@ export const getMessages = async (req: Request, res: Response) => {
 
 export const sendWidgetMessage = async (req: Request, res: Response) => {
   try {
-    const { conversationId } = req.params;
+    const { conversationId } = req.conversation!;
     const { content, visitorId } = req.body;
 
-    if (!content || !conversationId || !visitorId) {
+    if (!content || !visitorId) {
       return res.status(400).json({
         success: false,
         message:

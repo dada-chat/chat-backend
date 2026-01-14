@@ -11,12 +11,17 @@ export interface Widget {
   domainId: string;
 }
 
+export interface Conversation {
+  conversationId: string;
+}
+
 // 2. Express의 Request 인터페이스 확장
 declare global {
   namespace Express {
     interface Request {
       user?: AuthUser;
       widget?: Widget;
+      conversation?: Conversation;
     }
   }
 }

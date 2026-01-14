@@ -14,5 +14,8 @@ export const conversationIdParams = (
     });
   }
 
+  req.conversation = {
+    conversationId: conversationId,
+  };
   next();
 };
