@@ -111,6 +111,7 @@ export class ConversationRepository {
 
         return {
           id: conv.id,
+          status: conv.status,
           visitorName: conv.visitor.name,
           lastMessage: lastMessage?.content || "채팅 메세지가 없습니다.",
           lastMessageAt: conv.lastMessageAt,
