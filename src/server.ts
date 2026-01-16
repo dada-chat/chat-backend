@@ -16,6 +16,7 @@ import { SOCKET_EVENTS } from "./shared/socketEvents.js";
 // swagger 관련
 import swaggerUi from "swagger-ui-express";
 import { specs } from "./config/swagger.js";
+import path from "path";
 
 // 환경 변수 로드
 dotenv.config();
@@ -80,9 +81,56 @@ app.set("io", io);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
-// 기본 라우트 체크
+app.use("/public", express.static(path.join(process.cwd(), "src/public")));
+
+// 기본 라우트 체크 (상태 확인)
 app.get("/", (req: Request, res: Response) => {
-  res.send("DadaChat Service Backend is Running~~~");
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="ko">
+      <head>
+        <meta charset="UTF-8" />
+        <title>DadaChat Backend</title>
+        <style>
+          body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont;
+            background: #fff;
+            color: #181818;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+          }
+          .container {
+            text-align: center;
+          }
+          h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+          }
+          p {
+            color:#888
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <img src="/public/logo.svg" alt="DadaChat Logo" />
+          <h1>DadaChat Backend</h1>
+          <p>Service is running successfully.</p>
+        </div>
+      </body>
+    </html>
+  `);
+});
+
+// 서버가 살아있는지 확인
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: Date.now(),
+  });
 });
 
 app.use("/api/auth", authRoutes);
