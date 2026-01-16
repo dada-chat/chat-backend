@@ -2,17 +2,18 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./src",
+    "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": ["node", "express"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+
     // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
+    "lib": ["ESNext"],
+    "types": ["node", "express"],
     // and npm install -D @types/node
 
     // Other Outputs
@@ -39,7 +40,8 @@
     "isolatedModules": true,
     // "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true // 대소문자 에러 방지용 추가 추천
   },
   "include": [
     "src/**/*", // 일반적으로 소스 코드는 src 폴더에 위치합니다.
