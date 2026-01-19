@@ -1,6 +1,7 @@
 import { VisitorRepository } from "../repositories/visitorRepository.js";
 import { ConversationRepository } from "../repositories/conversationRepository.js";
 import { MessageRepository } from "../repositories/messageRepository.js";
+import type { SenderType } from "@prisma/client";
 
 export class WidgetService {
   private visitorRepository = new VisitorRepository();
@@ -62,6 +63,26 @@ export class WidgetService {
     return {
       conversationStatus: conversation.status,
       messageCursorResult,
+    };
+  }
+
+  async sendMessage(params: {
+    content: string;
+    senderType: SenderType;
+    senderId: string;
+    conversationId: string;
+  }) {
+    const conversation = await this.conversationRepository.findByIdWithDomain(
+      params.conversationId
+    );
+    if (!conversation) {
+      throw new Error("채팅방을 찾을 수 없습니다.");
+    }
+
+    const newMessage = await this.messageRepository.createMessage(params);
+    return {
+      message: newMessage,
+      conversation,
     };
   }
 }

@@ -80,6 +80,13 @@ export const sendWidgetMessage = async (req: Request, res: Response) => {
     // 대화방에 메시지 전송
     io.to(conversationId).emit(SOCKET_EVENTS.MESSAGE_RECEIVED, message);
 
+    const orgId = message.organizationId;
+    io.to(`org_${orgId}`).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_LIST, {
+      conversationId,
+      lastMessage: content,
+      updatedAt: message.createdAt,
+    });
+
     res.status(201).json({
       success: true,
       data: message,
