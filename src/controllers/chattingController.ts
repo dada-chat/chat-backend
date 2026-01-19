@@ -112,7 +112,9 @@ export const updateConversationStatus = async (req: Request, res: Response) => {
 
     const io = req.app.get("io");
     io.to(conversationId).emit(SOCKET_EVENTS.MESSAGE_RECEIVED, updated.message);
-    io.to(conversationId).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_STATUS, {
+
+    const orgId = currentUser.organizationId;
+    io.to(`org_${orgId}`).emit(SOCKET_EVENTS.UPDATE_CONVERSATION_STATUS, {
       conversationId,
       status: updated.status,
     });

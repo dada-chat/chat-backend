@@ -118,7 +118,15 @@ export class ConversationService {
     const conversation = await this.validateAccess(conversationId, currentUser);
 
     // 2. 상태 업데이트
-    return this.conversationRepository.updateStatus(conversationId, status);
+    const updatedConversation = await this.conversationRepository.updateStatus(
+      conversationId,
+      status
+    );
+
+    return {
+      ...updatedConversation,
+      organizationId: conversation.domain.organizationId,
+    };
   }
 
   // 채팅방 , 메세지 상태 읽음 처리
