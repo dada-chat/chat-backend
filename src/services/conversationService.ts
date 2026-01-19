@@ -118,7 +118,7 @@ export class ConversationService {
     const conversation = await this.validateAccess(conversationId, currentUser);
 
     // 2. 상태 업데이트
-    const updatedConversation = this.conversationRepository.updateStatus(
+    const updatedConversation = await this.conversationRepository.updateStatus(
       conversationId,
       status
     );
