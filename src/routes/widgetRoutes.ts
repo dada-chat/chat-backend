@@ -10,7 +10,7 @@ import { conversationIdParams } from "../middlewares/conversationMiddleware.js";
 const router = Router();
 
 // 위젯 설정 정보를 가져오는 API
-router.get("/config", (req, res) => {
+router.get("/config", authenticateWidget, (req, res) => {
   res.status(200).json({
     success: true,
     data: {
