@@ -5,7 +5,7 @@ Widget과 Dashboard 간 실시간 통신, 인증, 데이터 저장을 담당합�
 
 ---
 
-## 🧩 System Overview
+## System Overview
 
 DadaChat은 3개의 독립적인 애플리케이션으로 구성됩니다.
 
@@ -17,26 +17,26 @@ DadaChat은 3개의 독립적인 애플리케이션으로 구성됩니다.
 
 ---
 
-## 🔗 Deployment
+## Deployment
 
 - Backend URL: https://dadachat-backend.onrender.com
 - Supabase 기반 PostgreSQL DB 사용
-- Supabase Edge Functions 또는 Express + Node.js 20 환경에서 실행 가능
 - Render Free Tier 사용으로 서버 슬립 가능
   - Widget에서 `/health` 호출 시 서버 자동 깨우기 처리
 
 ---
 
-## 🔐 Test Credentials
+## Test Credentials
 
 > 테스트 계정 정보는 Dashboard README 참고
 
-- Backend API는 JWT 인증 및 Site Key 기반 인증으로 동작
 - Dashboard와 Widget 요청 시 인증 필요
+- Dashboard 요청 시 JWT 액세스 토큰,  
+  Widget 요청 시 Site Key 기반 인증을 사용
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - Node.js + Express
 - TypeScript
@@ -48,7 +48,7 @@ DadaChat은 3개의 독립적인 애플리케이션으로 구성됩니다.
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 ### 1. 인증 및 권한 관리
 
@@ -76,11 +76,6 @@ DadaChat은 3개의 독립적인 애플리케이션으로 구성됩니다.
   - 메세지 읽음상태 정보
   - 방문자 정보
 - 스키마 설계는 확장성 고려 (다중 도메인, 다중 관리자 가능)
-
-### 4. 서버 상태 관리
-
-- Render Free 플랜의 서버 슬립 대응
-- `/health` 엔드포인트를 통해 서버 깨우기 지원
 
 ---
 
